@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Reserva.API/Reserva.API.csproj" />
+  <Project Path="Reserva.Modelos/Reserva.Modelos.csproj" />
+</Solution>
