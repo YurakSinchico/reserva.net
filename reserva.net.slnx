@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="DockerFile.API" />
+  </Folder>
   <Project Path="API_Consumer/API_Consumer.csproj" Id="6e650527-4d50-41bc-b140-a9855aeb7386" />
   <Project Path="Reserva.API/Reserva.API.csproj" />
   <Project Path="Reserva.Modelos/Reserva.Modelos.csproj" />

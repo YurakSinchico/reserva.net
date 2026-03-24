@@ -1,0 +1,29 @@
+# Capa de ejecución
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+WORKDIR /app
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+
+# Capa de compilación (SDK 10)
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# Copiamos los proyectos para restaurar dependencias
+COPY ["Reserva.API/Reserva.API.csproj", "Reserva.API/"]
+COPY ["Reserva.Modelos/Reserva.Modelos.csproj", "Reserva.Modelos/"]
+
+RUN dotnet restore "Reserva.API/Reserva.API.csproj"
+
+# Copiamos el código fuente restante
+COPY . .
+
+WORKDIR "/src/Reserva.API"
+RUN dotnet build "Reserva.API.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Reserva.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Reserva.API.dll"]
