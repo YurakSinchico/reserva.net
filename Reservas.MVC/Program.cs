@@ -4,7 +4,7 @@ using Reserva.Modelos;
 using Reservas.Servicios;
 using Reservas.Servicios.Interfaces;
 
-Crud<Clientes>.EndPoint = "https://localhost:7070/api/Clientes";
+Crud<Clientes>.EndPoint = "https://reserva-net.onrender.com/api/Clientes";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -1,0 +1,33 @@
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+WORKDIR /app
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+
+COPY ["Reservas.MVC/Reservas.MVC.csproj", "Reservas.MVC/"]
+COPY ["API_Consumer/API_Consumer.csproj", "API_Consumer/"]
+COPY ["Reserva.Modelos/Reserva.Modelos.csproj", "Reserva.Modelos/"]
+COPY ["Reservas.Servicios/Reservas.Servicios.csproj", "Reservas.Servicios/"]
+
+
+RUN dotnet restore "Reservas.MVC/Reservas.MVC.csproj"
+
+
+COPY . .
+
+
+WORKDIR "/src/Reservas.MVC"
+RUN dotnet build "Reservas.MVC.csproj" -c Release -o /app/build
+
+FROM build AS publish
+# El flag ErrorOnDuplicatePublishOutputFiles=false es CLAVE para evitar el error de los JSON duplicados
+RUN dotnet publish "Reservas.MVC.csproj" -c Release -o /app/publish /p:UseAppHost=false /p:ErrorOnDuplicatePublishOutputFiles=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Reservas.MVC.dll"]
