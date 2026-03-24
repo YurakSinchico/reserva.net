@@ -20,12 +20,54 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        <ul class="navbar-nav">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Autores" asp-action="Index">Ver Autores</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Paises" asp-action="Index">Ver Paises</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Bibliotecas" asp-action="Index">Ver Biblios</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Ver Clientes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Libros" asp-action="Index">Ver Libros</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Prestamos" asp-action="Index">Ver Prestamos</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <span class="nav-link text-primary fw-bold">
+                                        <i class="bi bi-person-circle"></i> Hola, @User.Identity.Name
+                                    </span>
+                                </li>
+                                <li class="nav-item">
+                                    <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
+                                        <button type="submit" class="nav-link btn btn-link text-danger border-0">Salir</button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Index">Iniciar Sesión</a>
+                                </li>
+                            }
+                        </ul>
                     </ul>
                 </div>
             </div>

@@ -12,8 +12,8 @@ using Reserva.API.Data;
 namespace Reserva.API.Migrations
 {
     [DbContext(typeof(ReservaAPIContext))]
-    [Migration("20260324041253_V02")]
-    partial class V02
+    [Migration("20260324151300_V03")]
+    partial class V03
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

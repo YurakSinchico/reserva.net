@@ -50,7 +50,7 @@ namespace Reservas.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string nombre_cliente, string apellido_cliente, string correo_cliente, string contrasena_cliente,string telefono_cliente,DateOnly fecha_nacimiento_cliente)
+        public async Task<IActionResult> Register(string nombre_cliente, string apellido_cliente, string correo_cliente, string contrasena_cliente, string telefono_cliente, DateOnly fecha_nacimiento_cliente)
         {
             correo_cliente = correo_cliente.Trim().ToLower();
 
@@ -63,7 +63,7 @@ namespace Reservas.MVC.Controllers
                 return View();
             }
 
-            if (await _authService.Register(nombre_cliente, apellido_cliente, correo_cliente, contrasena_cliente, telefono_cliente,fecha_nacimiento_cliente))
+            if (await _authService.Register(nombre_cliente, apellido_cliente, correo_cliente, contrasena_cliente, telefono_cliente, fecha_nacimiento_cliente))
             {
                 return RedirectToAction("Index", "Account");
             }

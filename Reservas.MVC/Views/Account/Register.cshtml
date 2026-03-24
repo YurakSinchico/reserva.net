@@ -1,98 +1,92 @@
 ﻿@using Reserva.Modelos
 @{
-    ViewData["Title"] = "Registro de Cliente";
+    ViewData["Title"] = "Gestión de Usuarios";
 }
 
 <div class="elec-page container mt-4 mb-5">
     <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-9">
-            <div class="elec-card shadow-lg border-0 rounded-4 overflow-hidden">
-                <div class="elec-card-header text-center py-4 bg-primary text-white">
-                    <h2 class="mb-0 fw-bold">
-                        <i class="bi bi-person-badge-fill me-2"></i>Únete a Nuestra Comunidad
-                    </h2>
-                    <p class="mb-0 opacity-75">Crea tu cuenta para gestionar tus reservas de canchas</p>
+        <div class="col-md-10 col-lg-8">
+            <div class="elec-card shadow-lg">
+                <div class="elec-card-header text-center py-3 border-0">
+                    <h3 class="mb-0 text-white fw-bold">
+                        <i class="bi bi-person-plus-fill me-2"></i>Crear Nueva Cuenta
+                    </h3>
                 </div>
 
-                <div class="elec-card-body p-4 p-md-5 bg-dark">
-                    <form asp-action="Register" asp-controller="Account" method="post" class="needs-validation">
+                ```
+                <div class="elec-card-body p-4 p-md-5">
+                    <form asp-action="Register" asp-controller="Account" method="post">
 
                         <div class="row">
-                            <div class="col-md-6 pe-md-4 border-end border-secondary border-opacity-25">
-                                <h5 class="text-info mb-4 border-bottom border-info pb-2">
-                                    <i class="bi bi-person-vcard me-2"></i>Información Personal
+
+                            <div class="col-md-6 border-end border-secondary pe-md-4">
+                                <h5 class="elec-title mb-3 fs-5">
+                                    <i class="bi bi-person-lines-fill me-2"></i>Datos Personales
                                 </h5>
 
                                 <div class="mb-3">
-                                    <label class="form-label text-light small fw-bold">Nombres</label>
-                                    <input type="text" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
-                                           name="nombre_cliente" required placeholder="Ej: Yurak">
+                                    <label class="form-label text-white-50 small fw-bold">Nombres</label>
+                                    <input type="text" class="form-control elec-form-control rounded-3"
+                                           name="nombre_cliente" required placeholder="Ej: Juan Alberto">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label text-light small fw-bold">Apellidos</label>
-                                    <input type="text" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
-                                           name="apellido_cliente" required placeholder="Ej: Sinchico">
+                                    <label class="form-label text-white-50 small fw-bold">Apellidos</label>
+                                    <input type="text" class="form-control elec-form-control rounded-3"
+                                           name="apellido_cliente" required placeholder="Ej: Pérez Castro">
                                 </div>
 
+
                                 <div class="mb-3">
-                                    <label class="form-label text-light small fw-bold">Fecha de Nacimiento</label>
-                                    <input type="date" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
+                                    <label class="form-label text-white-50 small fw-bold">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control elec-form-control rounded-3"
                                            name="fecha_nacimiento_cliente" required>
                                 </div>
                             </div>
 
+
                             <div class="col-md-6 ps-md-4 mt-4 mt-md-0">
-                                <h5 class="text-info mb-4 border-bottom border-info pb-2">
-                                    <i class="bi bi-envelope-at me-2"></i>Contacto y Acceso
+                                <h5 class="elec-title mb-3 fs-5">
+                                    <i class="bi bi-card-heading me-2"></i>Contacto y Acceso
                                 </h5>
 
+
                                 <div class="mb-3">
-                                    <label class="form-label text-light small fw-bold">Correo Electrónico</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-at"></i></span>
-                                        <input type="email" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
-                                               name="correo_cliente" required placeholder="nombre@correo.com">
-                                    </div>
+                                    <label class="form-label text-white-50 small fw-bold">Correo Electrónico</label>
+                                    <input type="email" class="form-control elec-form-control rounded-3"
+                                           name="correo_cliente" required placeholder="usuario@ejemplo.com">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label text-light small fw-bold">Teléfono de Contacto</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-telephone"></i></span>
-                                        <input type="tel" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
-                                               name="telefono_cliente" required placeholder="099-XXX-XXXX">
-                                    </div>
+                                    <label class="form-label text-white-50 small fw-bold">Teléfono</label>
+                                    <input type="text" class="form-control elec-form-control rounded-3"
+                                           name="telefono_cliente" required placeholder="099-XXX-XXXX">
                                 </div>
 
+
                                 <div class="mb-3">
-                                    <label class="form-label text-light small fw-bold">Contraseña</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-key"></i></span>
-                                        <input type="password" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
-                                               name="contrasena_cliente" required placeholder="Seguridad alta">
-                                    </div>
-                                    <small class="text-muted">Use al menos 8 caracteres.</small>
+                                    <label class="form-label text-white-50 small fw-bold">Contraseña</label>
+                                    <input type="password" class="form-control elec-form-control rounded-3"
+                                           name="contrasena_cliente" required placeholder="Mínimo 8 caracteres">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="text-center mt-5">
-                            <div class="d-grid gap-2 d-md-block">
-                                <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill fw-bold shadow">
-                                    <i class="bi bi-check2-circle me-2"></i>Finalizar Registro
-                                </button>
-                                <a asp-action="Index" asp-controller="Account" class="btn btn-outline-light btn-lg px-5 rounded-pill ms-md-3">
-                                    Volver al Login
-                                </a>
-                            </div>
+                        <hr class="my-4 border-secondary opacity-50">
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn elec-btn elec-btn-primary btn-lg rounded-3 fw-bold shadow-sm">
+                                <i class="bi bi-person-check-fill me-2"></i>Crear Usuario
+                            </button>
+                            <a asp-action="Index" asp-controller="Home" class="btn elec-btn elec-btn-secondary rounded-3">
+                                Cancelar
+                            </a>
                         </div>
 
                         @if (ViewBag.ErrorMessage != null)
                         {
-                            <div class="alert alert-danger mt-4 border-0 rounded-3 shadow-sm d-flex align-items-center">
-                                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
-                                <div>@ViewBag.ErrorMessage</div>
+                            <div class="alert elec-alert elec-alert-danger mt-3 text-center border-0 shadow-sm">
+                                <i class="bi bi-exclamation-octagon-fill me-2"></i>@ViewBag.ErrorMessage
                             </div>
                         }
                     </form>
@@ -100,4 +94,6 @@
             </div>
         </div>
     </div>
+    ```
+
 </div>

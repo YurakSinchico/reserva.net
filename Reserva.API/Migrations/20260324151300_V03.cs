@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Reserva.API.Migrations
 {
     /// <inheritdoc />
-    public partial class V02 : Migration
+    public partial class V03 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

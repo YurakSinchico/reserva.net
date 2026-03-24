@@ -1,15 +1,14 @@
-using Reservas.Servicios;
-using Reservas.Servicios.Interfaces;
+
 using API_Consumer;
 using Reserva.Modelos;
+using Reservas.Servicios;
+using Reservas.Servicios.Interfaces;
 
 Crud<Clientes>.EndPoint = "https://localhost:7070/api/Clientes";
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 

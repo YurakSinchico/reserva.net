@@ -18,7 +18,7 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // 3. Configuración del Pipeline de HTTP (Middleware)
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     // AQUÍ ES EL CAMBIO: Usamos 'app', no 'builder'
     app.UseSwagger();
