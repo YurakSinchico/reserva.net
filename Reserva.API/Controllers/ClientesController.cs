@@ -54,6 +54,8 @@ namespace Reserva.API.Controllers
 
             _context.Entry(clientes).State = EntityState.Modified;
 
+            clientes.contrasena_cliente = BCrypt.Net.BCrypt.HashPassword(clientes.contrasena_cliente);
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -78,6 +80,7 @@ namespace Reserva.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Clientes>> PostClientes(Clientes clientes)
         {
+            clientes.contrasena_cliente = BCrypt.Net.BCrypt.HashPassword(clientes.contrasena_cliente);
             _context.Clientes.Add(clientes);
             await _context.SaveChangesAsync();
 

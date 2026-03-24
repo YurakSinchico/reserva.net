@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+<br />
+<br />
+<br />
+<div class="row justify-content-center align-items-center elec-page" style="min-height: 80vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="elec-card shadow-lg">
+            <div class="elec-card-header text-center pt-4 pb-2 border-0 bg-transparent">
+                <i class="bi bi-shield-lock-fill text-primary" style="font-size: 3rem;"></i>
+                <h2 class="elec-title mt-3 mb-1">Sistema de Reservas Canchas</h2>
+                <p class="text-white-50 small">Ingrese sus credenciales para continuar</p>
+            </div>
+
+            <div class="elec-card-body p-4">
+                <form asp-action="Login" asp-controller="Account" method="post">
+                    <div class="mb-4">
+                        <label class="form-label text-white small fw-bold">
+                            <i class="bi bi-envelope me-1"></i>Correo Electrónico
+                        </label>
+                        <input type="username" class="form-control elec-form-control rounded-3"
+                               name="username" required placeholder="nombre@correo.com">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white small fw-bold">
+                            <i class="bi bi-key me-1"></i>Contraseña
+                        </label>
+                        <input type="password" class="form-control elec-form-control rounded-3"
+                               name="password" required placeholder="****">
+                    </div>
+
+                    <button type="submit" class="btn elec-btn elec-btn-primary w-100 py-2 fw-bold rounded-3 mb-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar al Sistema
+                    </button>
+
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert elec-alert elec-alert-danger text-center py-2 border-0 small mb-0">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>@ViewBag.ErrorMessage
+                        </div>
+                    }
+                </form>
+            </div>
+
+            <div class="card-footer text-center border-top border-secondary bg-transparent py-3">
+                <p class="text-white-50 small mb-1">¿Aún no tienes cuenta?</p>
+                <a asp-action="Register" asp-controller="Account" class="text-info fw-bold text-decoration-none small">
+                    <i class="bi bi-person-plus me-1"></i>Regístrate aquí
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

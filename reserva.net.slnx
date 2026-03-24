@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="API_Consumer/API_Consumer.csproj" Id="6e650527-4d50-41bc-b140-a9855aeb7386" />
   <Project Path="Reserva.API/Reserva.API.csproj" />
   <Project Path="Reserva.Modelos/Reserva.Modelos.csproj" />
+  <Project Path="Reservas.MVC/Reservas.MVC.csproj" Id="f03016f5-1638-41e2-9465-78ba250e4bf7" />
+  <Project Path="Reservas.Servicios/Reservas.Servicios.csproj" Id="8f7956c5-5ba4-41a8-842b-1c0d543561d6" />
 </Solution>

@@ -63,6 +63,10 @@ namespace Reserva.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("contrasena_cliente")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("correo_cliente")
                         .IsRequired()
                         .HasColumnType("text");

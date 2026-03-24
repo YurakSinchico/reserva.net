@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\API_Consumer\API_Consumer.csproj" />
+    <ProjectReference Include="..\Reserva.API\Reserva.API.csproj" />
+    <ProjectReference Include="..\Reserva.Modelos\Reserva.Modelos.csproj" />
+  </ItemGroup>
+
+</Project>

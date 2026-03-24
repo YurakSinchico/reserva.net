@@ -11,6 +11,9 @@ namespace Reserva.Modelos
         public string nombre_cliente { get; set; }
         public string apellido_cliente { get; set; }
         public string correo_cliente { get; set; }
+
+        public string contrasena_cliente { get; set; }
+       
         public string telefono_cliente { get; set; }
         public DateOnly fecha_nacimiento_cliente { get; set; }
 

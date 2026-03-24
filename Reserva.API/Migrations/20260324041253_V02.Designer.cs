@@ -12,8 +12,8 @@ using Reserva.API.Data;
 namespace Reserva.API.Migrations
 {
     [DbContext(typeof(ReservaAPIContext))]
-    [Migration("20260323045310_V01")]
-    partial class V01
+    [Migration("20260324041253_V02")]
+    partial class V02
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,10 @@ namespace Reserva.API.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("apellido_cliente")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("contrasena_cliente")
                         .IsRequired()
                         .HasColumnType("text");
 

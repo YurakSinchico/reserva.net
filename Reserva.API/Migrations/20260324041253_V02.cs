@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Reserva.API.Migrations
 {
     /// <inheritdoc />
-    public partial class V01 : Migration
+    public partial class V02 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,6 +21,7 @@ namespace Reserva.API.Migrations
                     nombre_cliente = table.Column<string>(type: "text", nullable: false),
                     apellido_cliente = table.Column<string>(type: "text", nullable: false),
                     correo_cliente = table.Column<string>(type: "text", nullable: false),
+                    contrasena_cliente = table.Column<string>(type: "text", nullable: false),
                     telefono_cliente = table.Column<string>(type: "text", nullable: false),
                     fecha_nacimiento_cliente = table.Column<DateOnly>(type: "date", nullable: false)
                 },

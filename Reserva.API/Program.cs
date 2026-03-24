@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Configuración de la Base de Datos (PostgreSQL)
 builder.Services.AddDbContext<ReservaAPIContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("API_Reservas")
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Reservas_Render")
     ?? throw new InvalidOperationException("Connection string 'API_Reservas' not found.")));
 
 // 2. Registro de Servicios (Contenedor de Dependencias)

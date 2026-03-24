@@ -1,0 +1,103 @@
+﻿@using Reserva.Modelos
+@{
+    ViewData["Title"] = "Registro de Cliente";
+}
+
+<div class="elec-page container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-9">
+            <div class="elec-card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="elec-card-header text-center py-4 bg-primary text-white">
+                    <h2 class="mb-0 fw-bold">
+                        <i class="bi bi-person-badge-fill me-2"></i>Únete a Nuestra Comunidad
+                    </h2>
+                    <p class="mb-0 opacity-75">Crea tu cuenta para gestionar tus reservas de canchas</p>
+                </div>
+
+                <div class="elec-card-body p-4 p-md-5 bg-dark">
+                    <form asp-action="Register" asp-controller="Account" method="post" class="needs-validation">
+
+                        <div class="row">
+                            <div class="col-md-6 pe-md-4 border-end border-secondary border-opacity-25">
+                                <h5 class="text-info mb-4 border-bottom border-info pb-2">
+                                    <i class="bi bi-person-vcard me-2"></i>Información Personal
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-light small fw-bold">Nombres</label>
+                                    <input type="text" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
+                                           name="nombre_cliente" required placeholder="Ej: Yurak">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-light small fw-bold">Apellidos</label>
+                                    <input type="text" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
+                                           name="apellido_cliente" required placeholder="Ej: Sinchico">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-light small fw-bold">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
+                                           name="fecha_nacimiento_cliente" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 ps-md-4 mt-4 mt-md-0">
+                                <h5 class="text-info mb-4 border-bottom border-info pb-2">
+                                    <i class="bi bi-envelope-at me-2"></i>Contacto y Acceso
+                                </h5>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-light small fw-bold">Correo Electrónico</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-at"></i></span>
+                                        <input type="email" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
+                                               name="correo_cliente" required placeholder="nombre@correo.com">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-light small fw-bold">Teléfono de Contacto</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-telephone"></i></span>
+                                        <input type="tel" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
+                                               name="telefono_cliente" required placeholder="099-XXX-XXXX">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label text-light small fw-bold">Contraseña</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-key"></i></span>
+                                        <input type="password" class="form-control bg-secondary bg-opacity-10 text-white border-secondary"
+                                               name="contrasena_cliente" required placeholder="Seguridad alta">
+                                    </div>
+                                    <small class="text-muted">Use al menos 8 caracteres.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <div class="d-grid gap-2 d-md-block">
+                                <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill fw-bold shadow">
+                                    <i class="bi bi-check2-circle me-2"></i>Finalizar Registro
+                                </button>
+                                <a asp-action="Index" asp-controller="Account" class="btn btn-outline-light btn-lg px-5 rounded-pill ms-md-3">
+                                    Volver al Login
+                                </a>
+                            </div>
+                        </div>
+
+                        @if (ViewBag.ErrorMessage != null)
+                        {
+                            <div class="alert alert-danger mt-4 border-0 rounded-3 shadow-sm d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                                <div>@ViewBag.ErrorMessage</div>
+                            </div>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
