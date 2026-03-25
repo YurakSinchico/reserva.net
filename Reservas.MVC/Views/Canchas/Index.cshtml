@@ -1,11 +1,7 @@
 ﻿@model IEnumerable<Reserva.Modelos.Canchas>
-@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Canchas Disponibles";
-    var adminEmail = "yurianrango3@gmail.com";
-    var userEmail = User.FindFirstValue(ClaimTypes.Email);
-    var isAdmin = User.Identity.IsAuthenticated && userEmail == adminEmail;
 }
 
 <div class="container mt-5">
@@ -14,15 +10,6 @@
             <i class="bi bi-dribbble me-2"></i>Canchas Disponibles
         </h2>
         <p class="text-muted">Selecciona el tipo de cancha y reserva tu espacio deportivo</p>
-
-        @if (isAdmin)
-        {
-            <div class="mt-3">
-                <a asp-action="Create" class="btn btn-dark btn-modern shadow-sm">
-                    <i class="bi bi-plus-circle me-2"></i>Agregar Nueva Cancha
-                </a>
-            </div>
-        }
     </div>
 
     <div class="row">
@@ -33,7 +20,6 @@
                 // --- LÓGICA DE IMÁGENES Y COLORES ---
                 var tipo = cancha.Tipo_Canchas?.nombre_tip_cancha?.ToLower() ?? "general";
 
-                // Asignar imagen según el texto del tipo
                 string imagenUrl = tipo.Contains("fut") ? "/img/futbol.jpg" :
                 tipo.Contains("bas") ? "/img/basquet.jpg" :
                 tipo.Contains("voley") ? "/img/voley.jpg" : "/img/default.jpg";
@@ -43,27 +29,16 @@
                 tipo.Contains("voley") ? "bg-info text-white" : "bg-secondary";
 
                 <div class="col-md-4 mb-4">
-                    <div class="card card-cancha shadow-sm h-100 position-relative">
+                    <div class="card card-cancha shadow-sm h-100 position-relative border-0 rounded-4">
 
                         @* Imagen de la cancha *@
-                        <img src="@imagenUrl" class="card-img-top img-cancha" alt="@cancha.nombre_cancha">
+                        <img src="@imagenUrl" class="card-img-top img-cancha rounded-top-4" alt="@cancha.nombre_cancha" style="height: 200px; object-fit: cover;">
 
-                        @* 🛡️ BOTONES EDICIÓN (Solo Admin) *@
-                        @if (isAdmin)
-                        {
-                            <div class="position-absolute top-0 end-0 m-2">
-                                <a asp-action="Edit" asp-route-id="@cancha.Id" class="btn btn-sm btn-light shadow-sm rounded-circle text-primary">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@cancha.Id" class="btn btn-sm btn-light shadow-sm rounded-circle text-danger">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </div>
-                        }
+                        @* 🚫 SE ELIMINÓ EL BLOQUE DE BOTONES DE EDICIÓN AQUÍ 🚫 *@
 
-                        <div class="card-body d-flex flex-column">
+                        <div class="card-body d-flex flex-column p-4">
                             <div class="mb-2">
-                                <span class="badge rounded-pill @badgeClass fw-bold">
+                                <span class="badge rounded-pill @badgeClass fw-bold px-3 py-2">
                                     <i class="bi bi-tag-fill me-1"></i> @(cancha.Tipo_Canchas?.nombre_tip_cancha ?? "Sin Tipo")
                                 </span>
                             </div>
@@ -82,7 +57,7 @@
                                 <a asp-controller="Reservas"
                                    asp-action="Create"
                                    asp-route-id="@cancha.Id"
-                                   class="btn btn-primary btn-modern w-100 @(cancha.estado_cancha ? "" : "disabled")">
+                                   class="btn btn-primary btn-modern w-100 py-3 fw-bold @(cancha.estado_cancha ? "" : "disabled")">
                                     <i class="bi bi-calendar-plus me-2"></i>Reservar
                                 </a>
                             </div>

@@ -93,5 +93,41 @@ namespace Reservas.MVC.Controllers
             }
             return RedirectToAction("Index");
         }
+        // GET: Canchas/Delete/5
+        // Se usa para obtener los datos de la cancha antes de borrarla
+        public async Task<IActionResult> Delete(int id)
+        {
+            // Buscamos la cancha específica en la API
+            var cancha = await _http.GetFromJsonAsync<Canchas>($"Canchas/{id}");
+
+            if (cancha == null)
+            {
+                return NotFound();
+            }
+
+            return View(cancha);
+        }
+
+        // POST: Canchas/Delete/5
+       
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+
+            var response = await _http.DeleteAsync($"Canchas/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Si se elimina con éxito, regresamos al panel de administración
+                return RedirectToAction("Admin");
+            }
+
+            //mensjae de error de que no se puede eliminar
+            ModelState.AddModelError("", "No se pudo eliminar la cancha. Inténtalo de nuevo.");
+            return RedirectToAction("Admin");
+        }
     }
+
+
 }
