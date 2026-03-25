@@ -1,0 +1,59 @@
+﻿@model Reserva.Modelos.Canchas
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="display-6 text-primary mb-2"><i class="bi bi-plus-circle-dotted"></i></div>
+                        <h2 class="fw-bold">Nueva Cancha</h2>
+                        <p class="text-muted">Completa la información para habilitar el espacio</p>
+                    </div>
+
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="nombre_cancha" class="form-control border-0 bg-light rounded-3" placeholder="Ej: Cancha Central 1" required />
+                            <label asp-for="nombre_cancha">Nombre de la Cancha</label>
+                            <span asp-validation-for="nombre_cancha" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small text-muted mb-1 ms-2">Tipo de Deporte</label>
+                            <div class="input-group">
+                                <select asp-for="Tipo_CanchasId" class="form-select border-0 bg-light rounded-start-3" asp-items="ViewBag.Tipos" style="height: 58px;" required>
+                                    <option value="">Selecciona un tipo...</option>
+                                </select>
+                                <a asp-controller="TipoCanchas" asp-action="Create" class="btn btn-outline-primary d-flex align-items-center rounded-end-3 px-3" title="Añadir nuevo deporte">
+                                    <i class="bi bi-plus-lg"></i>
+                                </a>
+                            </div>
+                            <span asp-validation-for="Tipo_CanchasId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="descripcion_cancha" class="form-control border-0 bg-light rounded-3" style="height: 100px" placeholder="Detalles..."></textarea>
+                            <label asp-for="descripcion_cancha">Descripción / Notas</label>
+                        </div>
+
+                        <div class="form-check form-switch mb-4 p-0 d-flex justify-content-between align-items-center bg-light p-3 rounded-3">
+                            <label class="form-check-label fw-bold ms-2" for="estado_cancha">Habilitar inmediatamente</label>
+                            <input class="form-check-input me-2" type="checkbox" asp-for="estado_cancha" id="estado_cancha" checked>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-modern shadow-sm py-3 fw-bold">
+                                <i class="bi bi-check-lg me-2"></i>Guardar Cancha
+                            </button>
+                            <a asp-action="Admin" class="btn btn-link text-muted text-decoration-none small text-center">
+                                <i class="bi bi-arrow-left me-1"></i> Volver al panel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

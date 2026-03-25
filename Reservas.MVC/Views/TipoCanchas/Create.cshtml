@@ -1,0 +1,33 @@
+﻿@model Reserva.Modelos.Tipo_Canchas
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="display-6 text-success mb-2"><i class="bi bi-tag"></i></div>
+                        <h2 class="fw-bold">Nuevo Deporte</h2>
+                        <p class="text-muted">Añade una nueva categoría para las canchas</p>
+                    </div>
+
+                    <form asp-action="Create" method="post">
+                        <div class="form-floating mb-4">
+                            <input asp-for="nombre_tip_cancha" class="form-control border-0 bg-light rounded-3" placeholder="Ej: Tenis" required />
+                            <label>Nombre del Deporte</label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-modern shadow-sm">
+                                <i class="bi bi-plus-lg me-2"></i>Guardar Deporte
+                            </button>
+                            <a asp-controller="Canchas" asp-action="Create" class="btn btn-link text-muted text-decoration-none small">
+                                Cancelar y volver
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

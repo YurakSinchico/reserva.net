@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Reserva.Modelos.Canchas>
+@using System.Security.Claims
+
+@{
+    ViewData["Title"] = "Canchas Disponibles";
+    var adminEmail = "yurianrango3@gmail.com";
+    var userEmail = User.FindFirstValue(ClaimTypes.Email);
+    var isAdmin = User.Identity.IsAuthenticated && userEmail == adminEmail;
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-dribbble me-2"></i>Canchas Disponibles
+        </h2>
+        <p class="text-muted">Selecciona el tipo de cancha y reserva tu espacio deportivo</p>
+
+        @if (isAdmin)
+        {
+            <div class="mt-3">
+                <a asp-action="Create" class="btn btn-dark btn-modern shadow-sm">
+                    <i class="bi bi-plus-circle me-2"></i>Agregar Nueva Cancha
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var cancha in Model)
+            {
+                // --- LÓGICA DE IMÁGENES Y COLORES ---
+                var tipo = cancha.Tipo_Canchas?.nombre_tip_cancha?.ToLower() ?? "general";
+
+                // Asignar imagen según el texto del tipo
+                string imagenUrl = tipo.Contains("fut") ? "/img/futbol.jpg" :
+                tipo.Contains("bas") ? "/img/basquet.jpg" :
+                tipo.Contains("voley") ? "/img/voley.jpg" : "/img/default.jpg";
+
+                var badgeClass = tipo.Contains("fut") ? "bg-success" :
+                tipo.Contains("bas") ? "bg-warning text-dark" :
+                tipo.Contains("voley") ? "bg-info text-white" : "bg-secondary";
+
+                <div class="col-md-4 mb-4">
+                    <div class="card card-cancha shadow-sm h-100 position-relative">
+
+                        @* Imagen de la cancha *@
+                        <img src="@imagenUrl" class="card-img-top img-cancha" alt="@cancha.nombre_cancha">
+
+                        @* 🛡️ BOTONES EDICIÓN (Solo Admin) *@
+                        @if (isAdmin)
+                        {
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <a asp-action="Edit" asp-route-id="@cancha.Id" class="btn btn-sm btn-light shadow-sm rounded-circle text-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@cancha.Id" class="btn btn-sm btn-light shadow-sm rounded-circle text-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        }
+
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-2">
+                                <span class="badge rounded-pill @badgeClass fw-bold">
+                                    <i class="bi bi-tag-fill me-1"></i> @(cancha.Tipo_Canchas?.nombre_tip_cancha ?? "Sin Tipo")
+                                </span>
+                            </div>
+
+                            <h4 class="card-title fw-bold text-dark">@cancha.nombre_cancha</h4>
+                            <p class="text-muted small flex-grow-1">@cancha.descripcion_cancha</p>
+
+                            <div class="mb-3">
+                                <span class="badge @(cancha.estado_cancha ? "bg-success-soft" : "bg-danger-soft")">
+                                    <i class="bi bi-circle-fill me-1 small"></i>
+                                    @(cancha.estado_cancha ? "Disponible ahora" : "No disponible")
+                                </span>
+                            </div>
+
+                            <div class="mt-auto">
+                                <a asp-controller="Reservas"
+                                   asp-action="Create"
+                                   asp-route-id="@cancha.Id"
+                                   class="btn btn-primary btn-modern w-100 @(cancha.estado_cancha ? "" : "disabled")">
+                                    <i class="bi bi-calendar-plus me-2"></i>Reservar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <p class="text-muted">No hay canchas disponibles en este momento.</p>
+            </div>
+        }
+    </div>
+</div>

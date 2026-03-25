@@ -5,8 +5,14 @@ using Reservas.Servicios;
 using Reservas.Servicios.Interfaces;
 
 Crud<Clientes>.EndPoint = "https://reserva-net.onrender.com/api/Clientes";
+Crud<Canchas>.EndPoint = "https://reserva-net.onrender.com/api/Canchas";
+Crud<Tipo_Canchas>.EndPoint = "https://reserva-net.onrender.com/api/Tipo_Canchas";
+Crud<Reserva.Modelos.Reservas>.EndPoint = "https://reserva-net.onrender.com/api/Reservas";
+Crud<Horarios>.EndPoint = "https://reserva-net.onrender.com/api/Horarios";
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -34,6 +40,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

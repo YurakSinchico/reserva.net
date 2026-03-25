@@ -1,31 +1,82 @@
+/* 1. DEFINICIÓN DE VARIABLES (PONER ESTO AL INICIO) */
+:root {
+    --primary-main: #2563eb;
+    --success-soft: #dcfce7;
+    --success-text: #166534;
+    --danger-soft: #fee2e2;
+    --danger-text: #991b1b;
+    --accent-warning: #ffc107;
+}
+
+/* 2. TU CONFIGURACIÓN EXISTENTE */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--primary-main); /* Usando la variable aquí */
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #f8fafc; /* Un gris muy claro para que resalten las tarjetas */
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* 3. NUEVOS ESTILOS MINIMALISTAS */
+.card-cancha {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: #ffffff;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    .card-cancha:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+.btn-modern {
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 600;
+    background-color: var(--primary-main);
+    border: none;
+    color: white;
+}
+
+/* Clases de utilidad para los estados (Badges) */
+.bg-success-soft {
+    background-color: var(--success-soft) !important;
+    color: var(--success-text) !important;
+}
+
+.bg-danger-soft {
+    background-color: var(--danger-soft) !important;
+    color: var(--danger-text) !important;
+}
+/* Estilo para los inputs del formulario */
+.form-floating > .form-control:focus {
+    background-color: #ffffff !important;
+    border: 1px solid var(--primary-main) !important;
+}
+
+.form-floating > label {
+    padding-left: 1.25rem;
+    color: #64748b;
+}
+
+.bg-light {
+    background-color: #f1f5f9 !important; /* Gris azulado muy suave */
 }
