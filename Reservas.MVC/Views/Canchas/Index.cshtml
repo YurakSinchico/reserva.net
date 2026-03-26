@@ -17,12 +17,9 @@
         {
             @foreach (var cancha in Model)
             {
-                // --- LÓGICA DE IMÁGENES, COLORES Y ETIQUETAS ---
-                // Si la relación Tipo_Canchas es nula, intentamos sacar el tipo del nombre de la cancha
                 var nombreCancha = cancha.nombre_cancha?.ToLower() ?? "";
                 var tipoRelacion = cancha.Tipo_Canchas?.nombre_tip_cancha;
 
-                // Determinamos el tipo para la lógica visual
                 string tipoFinal = !string.IsNullOrEmpty(tipoRelacion) ? tipoRelacion.ToLower() :
                 nombreCancha.Contains("fut") ? "fútbol" :
                 nombreCancha.Contains("bas") ? "básquet" :
@@ -39,7 +36,6 @@
                 <div class="col-md-4">
                     <div class="card card-cancha-vivid h-100 shadow-sm border-0" style="border-radius: 20px; overflow: hidden;">
 
-                        @* Contenedor de Imagen con Badge Flotante CORREGIDO *@
                         <div class="img-wrapper" style="position: relative; height: 200px; overflow: hidden;">
                             <img src="@imagenUrl" class="w-100 h-100" style="object-fit: cover;" alt="@cancha.nombre_cancha">
 
@@ -58,7 +54,6 @@
                                 @cancha.descripcion_cancha
                             </p>
 
-                            @* Indicador de Estado Dinámico *@
                             <div class="d-flex align-items-center mb-4">
                                 @if (cancha.estado_cancha)
                                 {
@@ -131,3 +126,36 @@
         font-weight: 500;
     }
 </style>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Detectamos si la cancha ya vino seleccionada por defecto
+            var selectedCancha = $('#canchaSelect').val();
+            var selectedFecha = $('#fechaInput').val();
+
+            if (selectedCancha && selectedFecha) {
+                // Llamamos a tu función de carga de horarios automáticamente
+                cargarHorarios(selectedCancha, selectedFecha);
+            }
+
+            // También cargar si el usuario cambia la fecha manualmente
+            $('#fechaInput, #canchaSelect').change(function () {
+                var cId = $('#canchaSelect').val();
+                var fec = $('#fechaInput').val();
+                if (cId && fec) {
+                    cargarHorarios(cId, fec);
+                }
+            });
+        });
+
+        function cargarHorarios(canchaId, fecha) {
+            $.getJSON('@Url.Action("GetHorariosDisponibles", "Reservas")', { canchaId: canchaId, fecha: fecha }, function (data) {
+                var items = '<option value="">-- Seleccione el turno --</option>';
+                $.each(data, function (i, horario) {
+                    items += "<option value='" + horario.id + "'>" + horario.texto + "</option>";
+                });
+                $('#horarioSelect').html(items);
+            });
+        }
+    </script>
+}

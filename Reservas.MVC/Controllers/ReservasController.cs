@@ -2,21 +2,20 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Reserva.API.Data;
 using Reserva.Modelos;
+using System.Linq;
 using System.Security.Claims;
 
 namespace Reservas.MVC.Controllers
 {
     public class ReservasController : Controller
     {
-      
         private readonly string AdminEmail = "yurianrango3@gmail.com";
 
-      
+        // Obtener lista de canchas para los dropdowns
         private List<SelectListItem> GetCanchas()
         {
-            var canchas = Crud<Canchas>.GetAll();
+            var canchas = Crud<Canchas>.GetAll() ?? new List<Canchas>();
             return canchas.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
@@ -27,8 +26,8 @@ namespace Reservas.MVC.Controllers
         [HttpGet]
         public JsonResult GetHorariosDisponibles(int canchaId, DateTime fecha)
         {
-            var todasLasReservas = Crud<Reserva.Modelos.Reservas>.GetAll();
-            var todosLosHorarios = Crud<Horarios>.GetAll();
+            var todasLasReservas = Crud<Reserva.Modelos.Reservas>.GetAll() ?? new List<Reserva.Modelos.Reservas>();
+            var todosLosHorarios = Crud<Horarios>.GetAll() ?? new List<Horarios>();
 
             var ocupadosIds = todasLasReservas
                 .Where(r => r.CanchasId == canchaId && r.fecha_reserva.Date == fecha.Date)
@@ -46,115 +45,128 @@ namespace Reservas.MVC.Controllers
             return Json(disponibles);
         }
 
+        // Listado de reservas (Admin ve todo, Cliente solo lo suyo)
         public ActionResult Index()
         {
-            // Traemos la lista completa desde la API
             var todasLasReservas = Crud<Reserva.Modelos.Reservas>.GetAll() ?? new List<Reserva.Modelos.Reservas>();
-
-            // Obtenemos el correo del usuario actual
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            // Si eres Yurak (admin), enviamos la lista completa
-            if (userEmail == "yurianrango3@gmail.com")
+            if (userEmail == AdminEmail)
             {
                 return View(todasLasReservas);
             }
             else
             {
-                // Si es un cliente como Wally, filtramos para que vea solo lo suyo
                 var misReservas = todasLasReservas
                     .Where(r => r.Clientes?.correo_cliente == userEmail)
                     .ToList();
-
                 return View(misReservas);
             }
         }
 
         [HttpGet]
-        public ActionResult Create(int? canchaId)
+        public ActionResult Create(int? canchaId, DateTime? fecha)
         {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            // 1. Cargamos todas las canchas para el dropdown
+            var listaCanchas = Crud<Canchas>.GetAll() ?? new List<Canchas>();
+            ViewBag.Canchas = new SelectList(listaCanchas, "Id", "nombre_cancha");
 
-            // Verificamos si eres tú (Yurak)
-            if (userEmail != "yurianrango3@gmail.com")
+            // 2. Preparamos el modelo
+            var modelo = new Reserva.Modelos.Reservas();
+            modelo.fecha_reserva = fecha ?? DateTime.Now;
+
+            if (canchaId.HasValue)
             {
-                TempData["ErrorPermiso"] = "Solo la administradora puede crear reservas.";
-                return RedirectToAction("Index");
+                modelo.CanchasId = canchaId.Value;
+                // Guardamos el ID para que la vista sepa cuál marcar como "selected"
+                ViewBag.CanchaPreseleccionada = canchaId.Value;
+
+                // 3. Cargamos los horarios disponibles para ESA cancha y ESA fecha
+                var todasReservas = Crud<Reserva.Modelos.Reservas>.GetAll() ?? new List<Reserva.Modelos.Reservas>();
+                var todosHorarios = Crud<Horarios>.GetAll() ?? new List<Horarios>();
+
+                var ocupadosIds = todasReservas
+                    .Where(r => r.CanchasId == canchaId && r.fecha_reserva.Date == modelo.fecha_reserva.Date)
+                    .Select(r => r.HorariosId)
+                    .ToList();
+
+                // Enviamos solo los que no están ocupados
+                ViewBag.Horarios = todosHorarios.Where(h => !ocupadosIds.Contains(h.Id)).ToList();
+            }
+            else
+            {
+                ViewBag.Horarios = new List<Horarios>();
             }
 
-            ViewBag.Canchas = GetCanchas();
-            return View();
+            return View(modelo);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Reserva.Modelos.Reservas reserva)
         {
-            // Seguridad en el envío de datos
-            if (User.Identity?.Name != AdminEmail) return Forbid();
-
             try
             {
-                // Limpieza para PostgreSQL en Render
+                // Limpieza de objetos relacionados para evitar errores en el POST
                 reserva.Clientes = null;
                 reserva.Canchas = null;
                 reserva.Horarios = null;
+
+                // Formato de fecha para PostgreSQL
                 reserva.fecha_reserva = DateTime.SpecifyKind(reserva.fecha_reserva.Date, DateTimeKind.Utc);
 
-                // ID de usuario (Yurak)
+                // Asignar el ID del cliente logueado
                 var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
                 reserva.ClientesId = !string.IsNullOrEmpty(userIdClaim) ? int.Parse(userIdClaim) : 1;
 
-                API_Consumer.Crud<Reserva.Modelos.Reservas>.Create(reserva);
+                Crud<Reserva.Modelos.Reservas>.Create(reserva);
 
-                // Pasamos la fecha a Success sin usar el ID para evitar el 404
                 TempData["FechaExito"] = reserva.fecha_reserva.ToString("dd/MM/yyyy");
                 return RedirectToAction("Success");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Error: " + ex.Message);
+                ModelState.AddModelError("", "Error al crear reserva: " + ex.Message);
                 return ReloadView(reserva);
             }
         }
 
         public IActionResult Success()
         {
-           
             return View();
         }
 
-        public ActionResult Delete(int id)
-        {
-            if (User.Identity?.Name != AdminEmail) return RedirectToAction("Index");
-
-            var reserva = Crud<Reserva.Modelos.Reservas>.GetById(id);
-            if (reserva == null) return NotFound();
-            return View(reserva);
-        }
-
+        // Lógica unificada para CANCELAR reserva
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, Reserva.Modelos.Reservas reserva)
+        public ActionResult Cancelar(int id)
         {
-            if (User.Identity?.Name != AdminEmail) return Forbid();
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var reserva = Crud<Reserva.Modelos.Reservas>.GetById(id);
 
-            try
+            if (reserva == null) return NotFound();
+
+            // Seguridad: Solo el dueño de la reserva o el admin pueden cancelar
+            if (userEmail == AdminEmail || (reserva.Clientes?.correo_cliente == userEmail))
             {
-                Crud<Reserva.Modelos.Reservas>.Delete(id);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    Crud<Reserva.Modelos.Reservas>.Delete(id); // Libera el horario en la DB
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "No se pudo cancelar: " + ex.Message;
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "No se pudo eliminar: " + ex.Message);
-                return View();
-            }
+
+            return Forbid();
         }
 
         private ActionResult ReloadView(Reserva.Modelos.Reservas reserva)
         {
             ViewBag.Canchas = GetCanchas();
-            ViewBag.Horarios = new List<Horarios>();
             return View(reserva);
         }
     }

@@ -1,187 +1,100 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API_Consumer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Reserva.Modelos;
-using System.Net.Http.Json;
 using System.Security.Claims;
 
 namespace Reservas.MVC.Controllers
 {
     public class CanchasController : Controller
     {
-        private readonly HttpClient _http;
         private readonly string _adminEmail = "yurianrango3@gmail.com";
 
-        public CanchasController(IHttpClientFactory httpClientFactory)
+        // Vista para Deportistas (Catálogo)
+        public IActionResult Index()
         {
-            _http = httpClientFactory.CreateClient();
-            // Asegúrate de que la URL termine en / para que los endpoints se concatenen bien
-            _http.BaseAddress = new Uri("https://reserva-net.onrender.com/api/");
+            var canchas = Crud<Canchas>.GetAll() ?? new List<Canchas>();
+            // Solo mostramos las que están habilitadas (Estado: true)
+            var canchasActivas = canchas.Where(c => c.estado_cancha).ToList();
+            return View(canchasActivas);
         }
 
-        public async Task<IActionResult> Index()
-        {
-            try
-            {
-                var canchas = await _http.GetFromJsonAsync<List<Canchas>>("Canchas") ?? new List<Canchas>();
-                return View(canchas);
-            }
-            catch
-            {
-                return View(new List<Canchas>());
-            }
-        }
-
-        public async Task<IActionResult> Admin()
+        // Panel Administrativo (Inventario)
+        public IActionResult Admin()
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
-
             if (User.Identity.IsAuthenticated && userEmail == _adminEmail)
             {
-                try
-                {
-                    var canchas = await _http.GetFromJsonAsync<List<Canchas>>("Canchas") ?? new List<Canchas>();
-                    return View(canchas);
-                }
-                catch
-                {
-                    return View(new List<Canchas>());
-                }
+                var canchas = Crud<Canchas>.GetAll() ?? new List<Canchas>();
+                return View(canchas);
             }
             return RedirectToAction("Index");
         }
 
-        // GET: Canchas/Create
-        public async Task<IActionResult> Create()
+        [HttpGet]
+        public IActionResult Create()
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            if (User.Identity.IsAuthenticated && userEmail == _adminEmail)
+            if (userEmail == _adminEmail)
             {
-                try
-                {
-                    // ✅ CORRECCIÓN: Usamos "Tipo_Canchas" con guion bajo como se ve en tu carpeta de Controllers
-                    var tipos = await _http.GetFromJsonAsync<List<Tipo_Canchas>>("Tipo_Canchas") ?? new List<Tipo_Canchas>();
-                    ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha");
-                }
-                catch
-                {
-                    // Si falla la API, enviamos una lista vacía para que no de error la vista
-                    ViewBag.Tipos = new SelectList(new List<Tipo_Canchas>(), "Id", "nombre_tip_cancha");
-                }
-
+                var tipos = Crud<Tipo_Canchas>.GetAll() ?? new List<Tipo_Canchas>();
+                ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha");
                 return View();
             }
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Canchas cancha)
-        {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            if (User.Identity.IsAuthenticated && userEmail == _adminEmail)
-            {
-                // Enviamos los datos a la API
-                var response = await _http.PostAsJsonAsync("Canchas", cancha);
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Admin");
-                }
-
-                // Si algo falla al guardar, volvemos a cargar los tipos para mostrar el error en la misma vista
-                var tipos = await _http.GetFromJsonAsync<List<Tipo_Canchas>>("Tipo_Canchas") ?? new List<Tipo_Canchas>();
-                ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha");
-                return View(cancha);
-            }
-            return RedirectToAction("Index");
-        }
-
-        // GET: Canchas/Edit/5
-        // GET: Canchas/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            if (User.Identity.IsAuthenticated && userEmail == _adminEmail)
-            {
-                try
-                {
-                    // Obtenemos la cancha desde la API
-                    var cancha = await _http.GetFromJsonAsync<Canchas>($"Canchas/{id}");
-                    if (cancha == null) return NotFound();
-
-                    // Cargamos los tipos de cancha para el dropdown
-                    var tipos = await _http.GetFromJsonAsync<List<Tipo_Canchas>>("Tipo_Canchas") ?? new List<Tipo_Canchas>();
-                    ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha", cancha.Tipo_CanchasId);
-
-                    return View(cancha);
-                }
-                catch
-                {
-                    return RedirectToAction("Admin");
-                }
-            }
-            return RedirectToAction("Index");
-        }
-
-        // POST: Canchas/Edit/5
-        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Canchas cancha)
+        public IActionResult Create(Canchas cancha)
         {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            if (User.Identity.IsAuthenticated && userEmail == _adminEmail)
+            if (User.FindFirstValue(ClaimTypes.Email) == _adminEmail)
             {
-                // Enviamos el objeto actualizado a la API
-                var response = await _http.PutAsJsonAsync($"Canchas/{id}", cancha);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Admin");
-                }
-
-                // Si falla, recargamos la lista de tipos y mostramos el error
-                var tipos = await _http.GetFromJsonAsync<List<Tipo_Canchas>>("Tipo_Canchas") ?? new List<Tipo_Canchas>();
-                ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha", cancha.Tipo_CanchasId);
-                ModelState.AddModelError("", "No se pudo actualizar la cancha. Inténtalo de nuevo.");
-                return View(cancha);
-            }
-            return RedirectToAction("Index");
-        }
-
-
-        // GET: Canchas/Delete/5
-        // Se usa para obtener los datos de la cancha antes de borrarla
-        public async Task<IActionResult> Delete(int id)
-        {
-            // Buscamos la cancha específica en la API
-            var cancha = await _http.GetFromJsonAsync<Canchas>($"Canchas/{id}");
-
-            if (cancha == null)
-            {
-                return NotFound();
-            }
-
-            return View(cancha);
-        }
-
-        // POST: Canchas/Delete/5
-       
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-
-            var response = await _http.DeleteAsync($"Canchas/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                // Si se elimina con éxito, regresamos al panel de administración
+                cancha.estado_cancha = true; // Por defecto activa al crear
+                Crud<Canchas>.Create(cancha);
                 return RedirectToAction("Admin");
             }
+            return Forbid();
+        }
 
-            //mensjae de error de que no se puede eliminar
-            ModelState.AddModelError("", "No se pudo eliminar la cancha. Inténtalo de nuevo.");
-            return RedirectToAction("Admin");
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            if (User.FindFirstValue(ClaimTypes.Email) == _adminEmail)
+            {
+                var cancha = Crud<Canchas>.GetById(id);
+                if (cancha == null) return NotFound();
+
+                var tipos = Crud<Tipo_Canchas>.GetAll() ?? new List<Tipo_Canchas>();
+                ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha", cancha.Tipo_CanchasId);
+                return View(cancha);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Canchas cancha)
+        {
+            if (User.FindFirstValue(ClaimTypes.Email) == _adminEmail)
+            {
+                // La propiedad estado_cancha se actualiza desde el switch de la vista
+                Crud<Canchas>.Update(id, cancha);
+                return RedirectToAction("Admin");
+            }
+            return Forbid();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            if (User.FindFirstValue(ClaimTypes.Email) == _adminEmail)
+            {
+                Crud<Canchas>.Delete(id);
+                return RedirectToAction("Admin");
+            }
+            return Forbid();
         }
     }
-
-
 }
