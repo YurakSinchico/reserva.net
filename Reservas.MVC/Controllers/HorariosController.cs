@@ -99,18 +99,27 @@ namespace Reservas.MVC.Controllers
         // POST: HorariosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, Horarios horario)
+        public ActionResult Delete(int id, IFormCollection collection) // Cambiado para evitar conflictos de modelo
         {
             try
             {
-                // Mantenemos tu lógica de eliminación
-                Crud<Horarios>.Delete(id);
-                return RedirectToAction(nameof(Index));
+                // Esta línea ejecuta el DELETE físico en tu base de datos
+                bool eliminado = Crud<Horarios>.Delete(id);
+
+                if (eliminado)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("", "No se pudo eliminar el registro de la base de datos.");
+                    return View(Crud<Horarios>.GetById(id));
+                }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View();
+                ModelState.AddModelError("", "Error al conectar con la base de datos: " + ex.Message);
+                return View(Crud<Horarios>.GetById(id));
             }
         }
     }

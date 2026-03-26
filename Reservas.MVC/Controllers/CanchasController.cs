@@ -93,7 +93,59 @@ namespace Reservas.MVC.Controllers
             }
             return RedirectToAction("Index");
         }
-       
+
+        // GET: Canchas/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (User.Identity.IsAuthenticated && userEmail == _adminEmail)
+            {
+                try
+                {
+                    // Obtener la cancha específica de la API
+                    var cancha = await _http.GetFromJsonAsync<Canchas>($"Canchas/{id}");
+                    if (cancha == null) return NotFound();
+
+                    // Cargar los tipos para el desplegable (SelectList)
+                    var tipos = await _http.GetFromJsonAsync<List<Tipo_Canchas>>("Tipo_Canchas") ?? new List<Tipo_Canchas>();
+                    ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha", cancha.Tipo_CanchasId);
+
+                    return View(cancha);
+                }
+                catch
+                {
+                    return RedirectToAction("Admin");
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        // POST: Canchas/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Canchas cancha)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (User.Identity.IsAuthenticated && userEmail == _adminEmail)
+            {
+                // Enviamos la actualización a la API usando PUT
+                var response = await _http.PutAsJsonAsync($"Canchas/{id}", cancha);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Admin");
+                }
+
+                // Si falla, recargamos la vista con los datos y el error
+                var tipos = await _http.GetFromJsonAsync<List<Tipo_Canchas>>("Tipo_Canchas") ?? new List<Tipo_Canchas>();
+                ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha", cancha.Tipo_CanchasId);
+                ModelState.AddModelError("", "No se pudo actualizar la cancha en el servidor.");
+                return View(cancha);
+            }
+            return RedirectToAction("Index");
+        }
+
+
         // GET: Canchas/Delete/5
         // Se usa para obtener los datos de la cancha antes de borrarla
         public async Task<IActionResult> Delete(int id)

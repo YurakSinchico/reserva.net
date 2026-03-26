@@ -1,0 +1,64 @@
+﻿@model Reserva.Modelos.Horarios
+@{
+    ViewData["Title"] = "Eliminar Horario";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-lg text-center" style="border-radius: 25px; overflow: hidden;">
+
+                <div class="py-5" style="background: #fff5f5;">
+                    <div class="display-1 text-danger mb-3">
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                    </div>
+                    <h2 class="fw-bold text-dark">¿Eliminar Registro?</h2>
+                    <p class="text-muted px-4 small">Esta acción borrará el horario de forma permanente de la base de datos.</p>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="p-3 mb-4" style="background: #f8fafc; border-radius: 15px; border: 1px solid #eee;">
+                        <span class="text-uppercase small fw-bold text-muted d-block mb-1">Horario Seleccionado</span>
+                        <h3 class="fw-bold mb-0" style="color: #0f172a;">
+                            @Model.hora_inicio.ToString(@"hh\:mm") — @Model.hora_fin.ToString(@"hh\:mm")
+                        </h3>
+                        <small class="text-muted">ID del Registro: #@Model.Id</small>
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger btn-lg py-3 fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
+                                <i class="bi bi-trash3-fill me-2"></i> ELIMINAR AHORA
+                            </button>
+                            <a asp-action="Index" class="btn btn-light py-3 fw-semibold text-muted" style="border-radius: 15px;">
+                                Cancelar y volver
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger m-3 rounded-3 small">
+                        <div asp-validation-summary="All"></div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f4f7f6;
+    }
+
+    .btn-danger:hover {
+        background-color: #dc3545;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+</style>
