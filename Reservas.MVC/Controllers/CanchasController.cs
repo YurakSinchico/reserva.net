@@ -95,6 +95,7 @@ namespace Reservas.MVC.Controllers
         }
 
         // GET: Canchas/Edit/5
+        // GET: Canchas/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
@@ -102,11 +103,11 @@ namespace Reservas.MVC.Controllers
             {
                 try
                 {
-                    // Obtener la cancha específica de la API
+                    // Obtenemos la cancha desde la API
                     var cancha = await _http.GetFromJsonAsync<Canchas>($"Canchas/{id}");
                     if (cancha == null) return NotFound();
 
-                    // Cargar los tipos para el desplegable (SelectList)
+                    // Cargamos los tipos de cancha para el dropdown
                     var tipos = await _http.GetFromJsonAsync<List<Tipo_Canchas>>("Tipo_Canchas") ?? new List<Tipo_Canchas>();
                     ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha", cancha.Tipo_CanchasId);
 
@@ -128,7 +129,7 @@ namespace Reservas.MVC.Controllers
             var userEmail = User.FindFirstValue(ClaimTypes.Email);
             if (User.Identity.IsAuthenticated && userEmail == _adminEmail)
             {
-                // Enviamos la actualización a la API usando PUT
+                // Enviamos el objeto actualizado a la API
                 var response = await _http.PutAsJsonAsync($"Canchas/{id}", cancha);
 
                 if (response.IsSuccessStatusCode)
@@ -136,10 +137,10 @@ namespace Reservas.MVC.Controllers
                     return RedirectToAction("Admin");
                 }
 
-                // Si falla, recargamos la vista con los datos y el error
+                // Si falla, recargamos la lista de tipos y mostramos el error
                 var tipos = await _http.GetFromJsonAsync<List<Tipo_Canchas>>("Tipo_Canchas") ?? new List<Tipo_Canchas>();
                 ViewBag.Tipos = new SelectList(tipos, "Id", "nombre_tip_cancha", cancha.Tipo_CanchasId);
-                ModelState.AddModelError("", "No se pudo actualizar la cancha en el servidor.");
+                ModelState.AddModelError("", "No se pudo actualizar la cancha. Inténtalo de nuevo.");
                 return View(cancha);
             }
             return RedirectToAction("Index");

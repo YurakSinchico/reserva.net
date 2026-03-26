@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-dark mb-0">Editar <span style="color: #27F5CC;">Cancha</span></h2>
-            <p class="text-muted small">Modifica los detalles técnicos de la cancha #@Model.Id</p>
+            <p class="text-muted small">ID del Registro: #@Model.Id</p>
         </div>
         <a asp-action="Admin" class="btn btn-outline-secondary px-3 py-2" style="border-radius: 12px; font-weight: 600;">
             <i class="bi bi-arrow-left me-1"></i> Volver al Panel
@@ -18,44 +18,48 @@
         <div class="row g-0">
             <div class="col-md-4 d-none d-md-block p-5 text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
                 <div class="text-center mt-4">
-                    <i class="bi bi-pencil-square display-1" style="color: #27F5CC;"></i>
-                    <h4 class="mt-4 fw-bold">Actualización de Inventario</h4>
-                    <p class="opacity-75 small">Asegúrate de que el nombre y el tipo de cancha sean correctos para facilitar las reservas de los deportistas.</p>
+                    <div class="mb-4" style="display: inline-block; padding: 20px; border: 2px solid #27F5CC; border-radius: 20px;">
+                        <i class="bi bi-pencil-fill display-4" style="color: #27F5CC;"></i>
+                    </div>
+                    <h4 class="fw-bold">Actualización de Inventario</h4>
+                    <p class="opacity-75 small">Modifica los detalles técnicos y la disponibilidad de la cancha para los deportistas.</p>
                 </div>
             </div>
 
-            <div class="col-md-8 p-5">
+            <div class="col-md-8 p-5 bg-white">
                 <form asp-action="Edit" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Id" />
 
-                    <div class="row">
-                        <div class="col-md-12 mb-4">
-                            <label class="form-label fw-bold text-muted small text-uppercase">Nombre de la Cancha</label>
-                            <input asp-for="nombre_cancha" class="form-control form-control-lg border-2 shadow-sm"
-                                   style="border-radius: 12px;" placeholder="Ej: Cancha Sintética Pro" required />
-                            <span asp-validation-for="nombre_cancha" class="text-danger small"></span>
-                        </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Nombre de la Cancha</label>
+                        <input asp-for="nombre_cancha" class="form-control form-control-lg border-2 shadow-sm" style="border-radius: 12px;" required />
+                    </div>
 
-                        <div class="col-md-12 mb-4">
-                            <label class="form-label fw-bold text-muted small text-uppercase">Categoría / Tipo</label>
-                            <select asp-for="Tipo_CanchasId" class="form-select form-control-lg border-2 shadow-sm"
-                                    style="border-radius: 12px;" asp-items="ViewBag.Tipos">
-                                <option value="">-- Seleccione el Tipo de Cancha --</option>
-                            </select>
-                            <span asp-validation-for="Tipo_CanchasId" class="text-danger small"></span>
-                        </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Categoría / Tipo</label>
+                        <select asp-for="Tipo_CanchasId" class="form-select form-control-lg border-2 shadow-sm" style="border-radius: 12px;" asp-items="ViewBag.Tipos">
+                        </select>
+                    </div>
 
-                        <div class="col-md-12 mb-4">
-                            <label class="form-label fw-bold text-muted small text-uppercase">Descripción Corta</label>
-                            <textarea asp-for="descripcion_cancha" class="form-control border-2 shadow-sm"
-                                      style="border-radius: 12px; height: 100px;" placeholder="Detalles sobre el estado o ubicación..."></textarea>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Descripción</label>
+                        <textarea asp-for="descripcion_cancha" class="form-control border-2 shadow-sm" style="border-radius: 12px; height: 100px;"></textarea>
+                    </div>
+
+                    <div class="mb-4 d-flex align-items-center justify-content-between p-3" style="background: #f8fafc; border-radius: 15px; border: 1px solid #eee;">
+                        <div>
+                            <label class="form-label fw-bold text-dark mb-0">Habilitar Cancha</label>
+                            <p class="text-muted small mb-0">Si está inactivo, no aparecerá para reservas.</p>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input custom-switch" type="checkbox" asp-for="estado_cancha" style="width: 3.5rem; height: 1.75rem; cursor: pointer;">
                         </div>
                     </div>
 
                     <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-dark btn-lg py-3 fw-bold shadow" style="border-radius: 12px; transition: 0.3s;">
-                            <i class="bi bi-save2-fill me-2" style="color: #27F5CC;"></i> GUARDAR CAMBIOS
+                        <button type="submit" class="btn btn-dark btn-lg py-3 fw-bold shadow-sm" style="border-radius: 12px;">
+                            <i class="bi bi-check-circle-fill me-2" style="color: #27F5CC;"></i> GUARDAR CAMBIOS
                         </button>
                     </div>
                 </form>
@@ -65,13 +69,14 @@
 </div>
 
 <style>
-    .form-control:focus, .form-select:focus {
+    /* Estilo del Switch Turquesa */
+    .custom-switch:checked {
+        background-color: #27F5CC !important;
         border-color: #27F5CC !important;
-        box-shadow: 0 0 0 0.25rem rgba(39, 245, 204, 0.15) !important;
     }
 
-    .btn-dark:hover {
-        background-color: #1e293b;
-        transform: translateY(-2px);
+    .form-control:focus, .form-select:focus {
+        border-color: #27F5CC !important;
+        box-shadow: 0 0 0 0.25rem rgba(39, 245, 204, 0.1) !important;
     }
 </style>
