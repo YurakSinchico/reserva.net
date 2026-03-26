@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Swagger se registra aquí SIEMPRE
 builder.Services.AddOpenApi();
-
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);// esta linea es para leer datos
 var app = builder.Build();
 
 // 3. Configuración del Pipeline de HTTP (Middleware)

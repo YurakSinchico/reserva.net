@@ -136,32 +136,43 @@ namespace Reservas.MVC.Controllers
             return View();
         }
 
-        // Lógica unificada para CANCELAR reserva
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Cancelar(int id)
+        public IActionResult Cancelar(int id)
         {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            var reserva = Crud<Reserva.Modelos.Reservas>.GetById(id);
-
-            if (reserva == null) return NotFound();
-
-            // Seguridad: Solo el dueño de la reserva o el admin pueden cancelar
-            if (userEmail == AdminEmail || (reserva.Clientes?.correo_cliente == userEmail))
+            try
             {
-                try
+                // 1. Buscamos la reserva por ID
+                var reservaa = Crud<Reserva.Modelos.Reservas>.GetById(id);
+
+                if (reservaa != null)
                 {
-                    Crud<Reserva.Modelos.Reservas>.Delete(id); // Libera el horario en la DB
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    TempData["Error"] = "No se pudo cancelar: " + ex.Message;
-                    return RedirectToAction(nameof(Index));
+                    // 2. Validación de fecha: solo cancelar si es hoy o futuro
+                    if (reservaa.fecha_reserva.Date < DateTime.Now.Date)
+                    {
+                        TempData["Error"] = "No puedes cancelar reservas de fechas pasadas.";
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    // 3. CORRECCIÓN ERROR CS1503: Pasamos el objeto si tu Crud lo requiere 
+                    // o reservaa.Id si solo requiere el entero.
+                    // Cambia 'reservaa' por 'reservaa.Id'
+                    bool eliminado = Crud<Reserva.Modelos.Reservas>.Delete(reservaa.Id);
+
+                    if (eliminado)
+                    {
+                        TempData["Mensaje"] = "Reserva cancelada y horario liberado.";
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al cancelar: " + ex.Message;
+            }
 
-            return Forbid();
+            return RedirectToAction(nameof(Index));
         }
 
         private ActionResult ReloadView(Reserva.Modelos.Reservas reserva)

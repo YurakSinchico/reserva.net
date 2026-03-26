@@ -7,23 +7,30 @@
 }
 
 <div class="container mt-4">
-    @* Alerta de error (solo si intentan hackear la URL) *@
-    @if (TempData["ErrorPermiso"] != null)
+    @* --- ALERTAS DE FEEDBACK AL USUARIO --- *@
+    @if (TempData["Mensaje"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
-            <i class="bi bi-exclamation-octagon-fill me-2"></i> @TempData["ErrorPermiso"]
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-left: 5px solid #198754;">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Mensaje"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null || TempData["ErrorPermiso"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-left: 5px solid #dc3545;">
+            <i class="bi bi-exclamation-octagon-fill me-2"></i> @(TempData["Error"] ?? TempData["ErrorPermiso"])
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     <div class="card shadow border-0" style="border-radius: 16px; overflow: hidden;">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
-            <h4 class="mb-0 fw-bold">Historial de Reservas</h4>
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+            <h4 class="mb-0 fw-bold"><i class="bi bi-calendar3 me-2"></i>Historial de Reservas</h4>
 
-            @* Solo tú (Admin) ves este botón *@
             @if (userEmail == adminEmail)
             {
-                <a asp-action="Create" class="btn btn-light btn-sm fw-bold shadow-sm">
+                <a asp-action="Create" class="btn btn-success btn-sm fw-bold shadow-sm px-3">
                     <i class="bi bi-plus-lg me-1"></i> Nueva Reserva
                 </a>
             }
@@ -37,28 +44,57 @@
                             <th>Cancha</th>
                             <th>Horario</th>
                             <th>Cliente</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if (Model != null && Model.Any())
                         {
-                            @* AQUÍ VA EL CÓDIGO QUE PREGUNTASTE *@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td class="ps-4">@item.fecha_reserva.ToShortDateString()</td>
+                                    <td class="ps-4 fw-bold text-secondary">
+                                        @item.fecha_reserva.ToShortDateString()
+                                    </td>
                                     <td>
-                                        <span class="badge bg-info text-dark">
+                                        <span class="badge rounded-pill bg-info text-dark px-3">
+                                            <i class="bi bi-trophy-fill me-1"></i>
                                             @(item.Canchas?.nombre_cancha ?? "Cancha #" + item.CanchasId)
                                         </span>
                                     </td>
                                     <td>
-                                        <i class="bi bi-clock me-1 text-primary"></i>
-                                        @(item.Horarios?.hora_inicio.ToString(@"HH\:mm") ?? "N/A")
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-clock-history me-2 text-primary"></i>
+                                            <span class="fw-semibold text-dark">
+                                                @(item.Horarios?.hora_inicio.ToString(@"HH\:mm") ?? "N/A")
+                                            </span>
+                                        </div>
                                     </td>
                                     <td>
-                                        <i class="bi bi-person-circle me-1"></i>
-                                        <strong>@(item.Clientes?.nombre_cliente ?? "Usuario " + item.ClientesId)</strong>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://ui-avatars.com/api/?name=@(item.Clientes?.nombre_cliente ?? "U")&background=random&size=30" class="rounded-circle me-2" alt="user">
+                                            <span class="text-truncate" style="max-width: 150px;">
+                                                @(item.Clientes?.nombre_cliente ?? "Usuario " + item.ClientesId)
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        @* Lógica de Cancelación con validación de fecha *@
+                                        @if (item.fecha_reserva.Date >= DateTime.Now.Date)
+                                        {
+                                            <form asp-action="Cancelar" asp-route-id="@item.Id" method="post"
+                                                  onsubmit="return confirm('¿Estás seguro de que deseas cancelar esta reserva? El horario quedará libre inmediatamente.');">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
+                                                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary opacity-75 rounded-pill">
+                                                <i class="bi bi-check2-all me-1"></i> Finalizada
+                                            </span>
+                                        }
                                     </td>
                                 </tr>
                             }
@@ -66,9 +102,9 @@
                         else
                         {
                             <tr>
-                                <td colspan="4" class="text-center py-5 text-muted">
-                                    <i class="bi bi-calendar-x d-block mb-2" style="font-size: 2rem;"></i>
-                                    No hay reservas registradas.
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-calendar-x d-block mb-2" style="font-size: 3rem; opacity: 0.3;"></i>
+                                    <p class="mb-0">No hay reservas registradas actualmente.</p>
                                 </td>
                             </tr>
                         }
