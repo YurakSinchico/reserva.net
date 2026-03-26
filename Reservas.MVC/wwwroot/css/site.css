@@ -1,82 +1,159 @@
-/* 1. DEFINICIÓN DE VARIABLES (PONER ESTO AL INICIO) */
+/* 1. PALETA VIBRANTE */
 :root {
-    --primary-main: #2563eb;
-    --success-soft: #dcfce7;
-    --success-text: #166534;
-    --danger-soft: #fee2e2;
-    --danger-text: #991b1b;
-    --accent-warning: #ffc107;
-}
-
-/* 2. TU CONFIGURACIÓN EXISTENTE */
-html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--primary-main); /* Usando la variable aquí */
-}
-
-html {
-    position: relative;
-    min-height: 100%;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --vivid-mint: #10b981;
+    --deep-slate: #0f172a;
+    --soft-gradient: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
+    --sidebar-gradient: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
 }
 
 body {
-    margin-bottom: 60px;
-    background-color: #f8fafc; /* Un gris muy claro para que resalten las tarjetas */
+    background: var(--soft-gradient); /* Fondo con vida, no es blanco plano */
+    color: var(--deep-slate);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    margin: 0;
 }
 
-/* 3. NUEVOS ESTILOS MINIMALISTAS */
-.card-cancha {
-    border: none;
+/* 2. SIDEBAR CON ESTILO */
+.sidebar-wrapper {
+    width: 280px;
+    height: 95vh;
+    position: fixed;
+    top: 2.5vh;
+    left: 20px;
+    background: var(--sidebar-white);
+    border-radius: 30px; /* Bordes muy redondeados */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    border: 1px solid rgba(255,255,255,0.7);
+}
+
+.brand-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--deep-slate);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 50px;
+}
+
+.nav-link-vivid {
+    color: #64748b;
+    padding: 15px 20px;
     border-radius: 20px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    background: #ffffff;
+    margin-bottom: 8px;
+    transition: 0.3s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
 }
 
-    .card-cancha:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    .nav-link-vivid:hover {
+        background: white;
+        color: var(--vivid-mint);
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
 
-.btn-modern {
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-weight: 600;
-    background-color: var(--primary-main);
+    .nav-link-vivid.active {
+        background: var(--vivid-mint);
+        color: white;
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+    }
+
+/* 3. MAIN CONTENT */
+main.main-content {
+    margin-left: 320px;
+    padding: 40px;
+}
+
+/* 4. FOOTER "GLASS" */
+.footer-vivid {
+    margin-top: 50px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+/* 5. TARJETAS CON VIDA */
+.card-vivid {
+    background: white;
     border: none;
+    border-radius: 32px;
+    padding: 20px;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+}
+
+    .card-vivid:hover {
+        transform: scale(1.02) translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+
+/* Tarjetas Ultra Modernas */
+.card-cancha-vivid {
+    border: none;
+    border-radius: 30px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+    .card-cancha-vivid:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(39, 245, 204, 0.15);
+    }
+
+.img-wrapper {
+    position: relative;
+    padding: 12px;
+}
+
+    .img-wrapper img {
+        border-radius: 22px;
+        height: 180px;
+        object-fit: cover;
+    }
+
+.badge-tipo {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
     color: white;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
-/* Clases de utilidad para los estados (Badges) */
-.bg-success-soft {
-    background-color: var(--success-soft) !important;
-    color: var(--success-text) !important;
+.btn-reserva-vivid {
+    background: #0f172a; /* Azul muy oscuro para contraste */
+    color: white;
+    border: none;
+    border-radius: 18px;
+    padding: 12px;
+    font-weight: 700;
+    width: 100%;
+    transition: 0.3s;
 }
 
-.bg-danger-soft {
-    background-color: var(--danger-soft) !important;
-    color: var(--danger-text) !important;
-}
-/* Estilo para los inputs del formulario */
-.form-floating > .form-control:focus {
-    background-color: #ffffff !important;
-    border: 1px solid var(--primary-main) !important;
-}
-
-.form-floating > label {
-    padding-left: 1.25rem;
-    color: #64748b;
-}
-
-.bg-light {
-    background-color: #f1f5f9 !important; /* Gris azulado muy suave */
-}
+    .btn-reserva-vivid:hover {
+        background: #27F5CC;
+        color: #0f172a;
+        box-shadow: 0 8px 20px rgba(39, 245, 204, 0.4);
+    }

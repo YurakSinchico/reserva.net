@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API_Consumer;
+using Microsoft.AspNetCore.Mvc;
 using Reserva.Modelos; // Asegúrate de que este namespace sea el de tu proyecto de Modelos
 using System.Net.Http.Json;
 
@@ -32,6 +33,7 @@ namespace Reservas.MVC.Controllers
         // GET: /TipoCanchas/Create
         public IActionResult Create()
         {
+          
             return View();
         }
 

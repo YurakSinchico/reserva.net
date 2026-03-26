@@ -93,6 +93,7 @@ namespace Reservas.MVC.Controllers
             }
             return RedirectToAction("Index");
         }
+       
         // GET: Canchas/Delete/5
         // Se usa para obtener los datos de la cancha antes de borrarla
         public async Task<IActionResult> Delete(int id)

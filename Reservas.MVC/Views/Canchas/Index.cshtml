@@ -4,15 +4,15 @@
     ViewData["Title"] = "Canchas Disponibles";
 }
 
-<div class="container mt-5">
+<div class="container py-5">
     <div class="text-center mb-5">
-        <h2 class="fw-bold text-primary">
-            <i class="bi bi-dribbble me-2"></i>Canchas Disponibles
+        <h2 class="fw-800 display-5 mb-2" style="letter-spacing: -1.5px;">
+            <i class="bi bi-dribbble me-2 text-primary"></i>Canchas <span style="color: #27F5CC;">Disponibles</span>
         </h2>
-        <p class="text-muted">Selecciona el tipo de cancha y reserva tu espacio deportivo</p>
+        <p class="text-muted fw-500">Selecciona el tipo de cancha y reserva tu espacio deportivo en segundos.</p>
     </div>
 
-    <div class="row">
+    <div class="row g-4">
         @if (Model != null && Model.Any())
         {
             @foreach (var cancha in Model)
@@ -24,41 +24,56 @@
                 tipo.Contains("bas") ? "/img/basquet.jpg" :
                 tipo.Contains("voley") ? "/img/voley.jpg" : "/img/default.jpg";
 
-                var badgeClass = tipo.Contains("fut") ? "bg-success" :
-                tipo.Contains("bas") ? "bg-warning text-dark" :
-                tipo.Contains("voley") ? "bg-info text-white" : "bg-secondary";
+                var badgeColor = tipo.Contains("fut") ? "#10b981" :
+                tipo.Contains("bas") ? "#f59e0b" :
+                tipo.Contains("voley") ? "#0ea5e9" : "#64748b";
 
-                <div class="col-md-4 mb-4">
-                    <div class="card card-cancha shadow-sm h-100 position-relative border-0 rounded-4">
+                <div class="col-md-4">
+                    <div class="card card-cancha-vivid h-100 shadow-sm border-0" style="border-radius: 20px; overflow: hidden;">
+                        @* Contenedor de Imagen con Badge Flotante *@
+                        <div class="img-wrapper" style="position: relative; height: 200px; overflow: hidden;">
+                            <img src="@imagenUrl" class="w-100 h-100" style="object-fit: cover;" alt="@cancha.nombre_cancha">
+                            <span class="badge-tipo" style="position: absolute; top: 15px; left: 15px; background: white; padding: 5px 15px; border-radius: 30px; font-weight: 700; font-size: 0.75rem; border-left: 4px solid @badgeColor; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                                <i class="bi bi-tag-fill me-2" style="color: @badgeColor;"></i>
+                                @(cancha.Tipo_Canchas?.nombre_tip_cancha ?? "General")
+                            </span>
+                        </div>
 
-                        @* Imagen de la cancha *@
-                        <img src="@imagenUrl" class="card-img-top img-cancha rounded-top-4" alt="@cancha.nombre_cancha" style="height: 200px; object-fit: cover;">
+                        <div class="card-body px-4 pb-4 d-flex flex-column">
+                            <h4 class="fw-800 mb-2" style="letter-spacing: -0.5px; color: #0f172a; margin-top: 15px;">
+                                @cancha.nombre_cancha
+                            </h4>
 
-                        @* 🚫 SE ELIMINÓ EL BLOQUE DE BOTONES DE EDICIÓN AQUÍ 🚫 *@
+                            <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
+                                @cancha.descripcion_cancha
+                            </p>
 
-                        <div class="card-body d-flex flex-column p-4">
-                            <div class="mb-2">
-                                <span class="badge rounded-pill @badgeClass fw-bold px-3 py-2">
-                                    <i class="bi bi-tag-fill me-1"></i> @(cancha.Tipo_Canchas?.nombre_tip_cancha ?? "Sin Tipo")
-                                </span>
+                            @* Indicador de Estado Dinámico *@
+                            <div class="d-flex align-items-center mb-4">
+                                @if (cancha.estado_cancha)
+                                {
+                                    <div class="p-2 rounded-circle me-2" style="background: rgba(39, 245, 204, 0.2);">
+                                        <div style="width: 8px; height: 8px; background: #27F5CC; border-radius: 50%;"></div>
+                                    </div>
+                                    <span class="small fw-800 text-success" style="text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.7rem;">Disponible ahora</span>
+                                }
+                                else
+                                {
+                                    <div class="p-2 rounded-circle me-2" style="background: rgba(239, 68, 68, 0.1);">
+                                        <div style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></div>
+                                    </div>
+                                    <span class="small fw-800 text-danger" style="text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.7rem;">No disponible</span>
+                                }
                             </div>
 
-                            <h4 class="card-title fw-bold text-dark">@cancha.nombre_cancha</h4>
-                            <p class="text-muted small flex-grow-1">@cancha.descripcion_cancha</p>
-
-                            <div class="mb-3">
-                                <span class="badge @(cancha.estado_cancha ? "bg-success-soft" : "bg-danger-soft")">
-                                    <i class="bi bi-circle-fill me-1 small"></i>
-                                    @(cancha.estado_cancha ? "Disponible ahora" : "No disponible")
-                                </span>
-                            </div>
-
+                            @* --- ESTE ES EL BOTÓN CONECTADO AL CONTROLADOR DE RESERVAS --- *@
                             <div class="mt-auto">
                                 <a asp-controller="Reservas"
                                    asp-action="Create"
-                                   asp-route-id="@cancha.Id"
-                                   class="btn btn-primary btn-modern w-100 py-3 fw-bold @(cancha.estado_cancha ? "" : "disabled")">
-                                    <i class="bi bi-calendar-plus me-2"></i>Reservar
+                                   asp-route-canchaId="@cancha.Id"
+                                   class="btn btn-reserva-vivid w-100 py-3 fw-bold @(cancha.estado_cancha ? "" : "disabled")"
+                                   style="border-radius: 12px; transition: all 0.3s ease;">
+                                    <i class="bi bi-calendar-check me-2"></i> Reservar Cancha
                                 </a>
                             </div>
                         </div>
@@ -68,9 +83,42 @@
         }
         else
         {
-            <div class="col-12 text-center">
-                <p class="text-muted">No hay canchas disponibles en este momento.</p>
+            <div class="col-12 text-center py-5">
+                <div class="mb-3 display-1">🏟️</div>
+                <h3 class="fw-bold">No hay canchas listas</h3>
+                <p class="text-muted">Vuelve más tarde para ver los espacios disponibles.</p>
             </div>
         }
     </div>
 </div>
+
+<style>
+    .card-cancha-vivid {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card-cancha-vivid:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+        }
+
+    .btn-reserva-vivid {
+        background: #0f172a;
+        color: white;
+        border: none;
+    }
+
+        .btn-reserva-vivid:hover:not(.disabled) {
+            background: #27F5CC;
+            color: #0f172a;
+            box-shadow: 0 8px 20px rgba(39, 245, 204, 0.4);
+        }
+
+    .fw-800 {
+        font-weight: 800;
+    }
+
+    .fw-500 {
+        font-weight: 500;
+    }
+</style>

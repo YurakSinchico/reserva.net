@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Reserva.Modelos.Horarios>
+
+@{
+    ViewData["Title"] = "Gestión de Horarios";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Gestión de <span style="color: #27F5CC;">Horarios</span></h2>
+        <a asp-action="Create" class="btn btn-dark px-4 shadow-sm" style="border-radius: 10px;">
+            <i class="bi bi-plus-lg"></i> + Nuevo Horario
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th class="py-3 ps-4">ID</th>
+                    <th class="py-3">Hora Inicio</th>
+                    <th class="py-3">Hora Fin</th>
+                    <th class="py-3 text-end pe-4">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="ps-4 text-muted">#@item.Id</td>
+                        <td class="fw-bold">@item.hora_inicio.ToString(@"hh\:mm")</td>
+                        <td class="text-muted">@item.hora_fin.ToString(@"hh\:mm")</td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-2">Editar</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

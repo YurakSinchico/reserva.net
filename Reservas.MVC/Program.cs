@@ -8,7 +8,8 @@ Crud<Clientes>.EndPoint = "https://reserva-net.onrender.com/api/Clientes";
 Crud<Canchas>.EndPoint = "https://reserva-net.onrender.com/api/Canchas";
 Crud<Tipo_Canchas>.EndPoint = "https://reserva-net.onrender.com/api/Tipo_Canchas";
 Crud<Reserva.Modelos.Reservas>.EndPoint = "https://reserva-net.onrender.com/api/Reservas";
-Crud<Horarios>.EndPoint = "https://reserva-net.onrender.com/api/Horarios";
+// Asegúrate de que esta línea esté antes del builder.Build()
+API_Consumer.Crud<Reserva.Modelos.Horarios>.EndPoint = "https://reserva-net.onrender.com/api/Horarios";
 
 var builder = WebApplication.CreateBuilder(args);
 

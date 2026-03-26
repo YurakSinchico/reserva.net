@@ -80,3 +80,16 @@
         });
     </script>
 }
+@if (TempData["Mensaje"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '¡Hecho!',
+            text: '@TempData["Mensaje"]',
+            timer: 2000,
+            showConfirmButton: false,
+            borderRadius: '1rem'
+        });
+    </script>
+}

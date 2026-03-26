@@ -1,0 +1,37 @@
+﻿@model Reserva.Modelos.Horarios
+
+@{
+    ViewData["Title"] = "Editar Horario";
+}
+
+<div class="container mt-5">
+    <div class="card mx-auto shadow-lg p-0" style="max-width: 450px; border-radius: 20px; overflow: hidden; border: 1px solid #ffc107;">
+        <div class="bg-warning p-4 text-dark text-center">
+            <h4 class="fw-bold m-0">Editar Horario <span class="text-muted">#@Model.Id</span></h4>
+        </div>
+
+        <div class="p-4">
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">HORA INICIO</label>
+                    <input asp-for="hora_inicio" type="time" class="form-control form-control-lg" style="border-radius: 12px;" required />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">HORA FIN</label>
+                    <input asp-for="hora_fin" type="time" class="form-control form-control-lg" style="border-radius: 12px;" required />
+                </div>
+
+                <button type="submit" class="btn btn-warning w-100 py-3 fw-bold shadow" style="border-radius: 12px;">
+                    ACTUALIZAR CAMBIOS
+                </button>
+
+                <div class="text-center mt-3">
+                    <a asp-action="Index" class="text-decoration-none text-muted small">Cancelar y volver</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

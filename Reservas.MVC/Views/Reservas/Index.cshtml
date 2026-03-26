@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Reserva.Modelos.Reservas>
+
+@{
+    ViewData["Title"] = "Mis Reservas";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Historial de Reservas</h4>
+            <a asp-action="Create" class="btn btn-light btn-sm">Nueva Reserva</a>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cancha</th>
+                        <th>Horario</th>
+                        <th>Cliente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.fecha_reserva.ToShortDateString()</td>
+                                <td>@(item.Canchas?.nombre_cancha ?? "Cancha #" + item.CanchasId)</td>
+                                <td>@(item.Horarios?.hora_inicio.ToString(@"HH\:mm") ?? "ID: " + item.HorariosId)</td>
+                                <td>@(item.Clientes?.nombre_cliente ?? "Usuario " + item.ClientesId)</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No tienes reservas registradas aún.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

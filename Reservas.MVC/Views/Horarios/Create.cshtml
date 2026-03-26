@@ -1,0 +1,37 @@
+﻿@model Reserva.Modelos.Horarios
+
+@{
+    ViewData["Title"] = "Nuevo Horario";
+}
+
+<div class="container mt-5">
+    <div class="card mx-auto shadow-lg p-0" style="max-width: 450px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(39, 245, 204, 0.3);">
+        <div class="bg-dark p-4 text-white text-center">
+            <h4 class="fw-bold m-0">Configurar <span style="color: #27F5CC;">Horario</span></h4>
+        </div>
+
+        <div class="p-4">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Día</label>
+                    <input name="dia" class="form-control" placeholder="Ej: Lunes-Viernes" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Hora Inicio</label>
+                    <input name="hora_inicio" type="time" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Hora Fin</label>
+                    <input name="hora_fin" type="time" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-dark w-100 py-3 fw-bold shadow">
+                    GUARDAR HORARIO
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

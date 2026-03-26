@@ -1,0 +1,88 @@
+﻿@using Reserva.Modelos
+@model Reservas
+
+@{
+    ViewData["Title"] = "Nueva Reserva";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg" style="border-radius: 15px;">
+        <div class="card-header bg-dark text-white text-center">
+            <h4 class="mb-0">Nueva Reserva</h4>
+        </div>
+        <div class="card-body">
+            <div asp-validation-summary="All" class="text-danger mb-3 small"></div>
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                @* IMPORTANTE: Se eliminó el ClientesId oculto. 
+                   Ahora el controlador asignará el ID del usuario que haya iniciado sesión. 
+                *@
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">CANCHA</label>
+                    <select id="canchaSelect" asp-for="CanchasId" class="form-select" onchange="actualizar()" required>
+                        <option value="">-- Seleccione una cancha --</option>
+                        @if (ViewBag.Canchas != null)
+                        {
+                            foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Canchas)
+                            {
+                                bool esSeleccionada = ViewBag.CanchaPreseleccionada?.ToString() == item.Value;
+                                <option value="@item.Value" selected="@esSeleccionada">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">FECHA DE RESERVA</label>
+                    <input type="date" id="fechaInput" asp-for="fecha_reserva" class="form-control"
+                           onchange="actualizar()" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold small">HORARIOS DISPONIBLES</label>
+                    <select asp-for="HorariosId" class="form-select" id="horarioSelect" required>
+                        <option value="">-- Seleccione el turno --</option>
+                        @if (ViewBag.Horarios != null && ((IEnumerable<Horarios>)ViewBag.Horarios).Any())
+                        {
+                            foreach (var h in (IEnumerable<Horarios>)ViewBag.Horarios)
+                            {
+                                <option value="@h.Id">@h.hora_inicio.ToString(@"HH\:mm") - @h.hora_fin.ToString(@"HH\:mm")</option>
+                            }
+                        }
+                        else
+                        {
+                            <option disabled>No hay horarios disponibles para esta selección.</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">CONFIRMAR MI RESERVA</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function actualizar() {
+            const cancha = document.getElementById("canchaSelect").value;
+            const fecha = document.getElementById("fechaInput").value;
+
+            // Si ambos campos tienen valor, recargamos la página para filtrar horarios
+            if (cancha && fecha) {
+                window.location.href = `/Reservas/Create?canchaId=${cancha}&fecha=${fecha}`;
+            }
+        }
+
+        // Mantener la fecha seleccionada después de la recarga
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('fecha')) {
+                document.getElementById("fechaInput").value = params.get('fecha');
+            }
+        }
+    </script>
+}
