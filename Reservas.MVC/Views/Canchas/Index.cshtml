@@ -17,25 +17,35 @@
         {
             @foreach (var cancha in Model)
             {
-                // --- LÓGICA DE IMÁGENES Y COLORES ---
-                var tipo = cancha.Tipo_Canchas?.nombre_tip_cancha?.ToLower() ?? "general";
+                // --- LÓGICA DE IMÁGENES, COLORES Y ETIQUETAS ---
+                // Si la relación Tipo_Canchas es nula, intentamos sacar el tipo del nombre de la cancha
+                var nombreCancha = cancha.nombre_cancha?.ToLower() ?? "";
+                var tipoRelacion = cancha.Tipo_Canchas?.nombre_tip_cancha;
 
-                string imagenUrl = tipo.Contains("fut") ? "/img/futbol.jpg" :
-                tipo.Contains("bas") ? "/img/basquet.jpg" :
-                tipo.Contains("voley") ? "/img/voley.jpg" : "/img/default.jpg";
+                // Determinamos el tipo para la lógica visual
+                string tipoFinal = !string.IsNullOrEmpty(tipoRelacion) ? tipoRelacion.ToLower() :
+                nombreCancha.Contains("fut") ? "fútbol" :
+                nombreCancha.Contains("bas") ? "básquet" :
+                nombreCancha.Contains("voley") ? "vóley" : "general";
 
-                var badgeColor = tipo.Contains("fut") ? "#10b981" :
-                tipo.Contains("bas") ? "#f59e0b" :
-                tipo.Contains("voley") ? "#0ea5e9" : "#64748b";
+                string imagenUrl = tipoFinal.Contains("fut") ? "/img/futbol.jpg" :
+                tipoFinal.Contains("bas") ? "/img/basquet.jpg" :
+                tipoFinal.Contains("voley") ? "/img/voley.jpg" : "/img/default.jpg";
+
+                var badgeColor = tipoFinal.Contains("fut") ? "#10b981" :
+                tipoFinal.Contains("bas") ? "#f59e0b" :
+                tipoFinal.Contains("voley") ? "#0ea5e9" : "#64748b";
 
                 <div class="col-md-4">
                     <div class="card card-cancha-vivid h-100 shadow-sm border-0" style="border-radius: 20px; overflow: hidden;">
-                        @* Contenedor de Imagen con Badge Flotante *@
+
+                        @* Contenedor de Imagen con Badge Flotante CORREGIDO *@
                         <div class="img-wrapper" style="position: relative; height: 200px; overflow: hidden;">
                             <img src="@imagenUrl" class="w-100 h-100" style="object-fit: cover;" alt="@cancha.nombre_cancha">
-                            <span class="badge-tipo" style="position: absolute; top: 15px; left: 15px; background: white; padding: 5px 15px; border-radius: 30px; font-weight: 700; font-size: 0.75rem; border-left: 4px solid @badgeColor; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+
+                            <span class="badge-tipo" style="position: absolute; top: 15px; left: 15px; background: white; padding: 5px 15px; border-radius: 30px; font-weight: 700; font-size: 0.75rem; border-left: 4px solid @badgeColor; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: #0f172a; display: flex; align-items: center;">
                                 <i class="bi bi-tag-fill me-2" style="color: @badgeColor;"></i>
-                                @(cancha.Tipo_Canchas?.nombre_tip_cancha ?? "General")
+                                @(char.ToUpper(tipoFinal[0]) + tipoFinal.Substring(1))
                             </span>
                         </div>
 
@@ -66,7 +76,6 @@
                                 }
                             </div>
 
-                            @* --- ESTE ES EL BOTÓN CONECTADO AL CONTROLADOR DE RESERVAS --- *@
                             <div class="mt-auto">
                                 <a asp-controller="Reservas"
                                    asp-action="Create"

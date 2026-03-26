@@ -4,14 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Reserva.API.Data;
 using Reserva.Modelos;
+using System.Security.Claims;
 
 namespace Reservas.MVC.Controllers
 {
     public class ReservasController : Controller
     {
-        
+      
+        private readonly string AdminEmail = "yurianrango3@gmail.com";
 
-        // 2. MÉTODOS AUXILIARES PARA CARGAR DROPDOWNS (Como GetClientes/GetLibros)
+      
         private List<SelectListItem> GetCanchas()
         {
             var canchas = Crud<Canchas>.GetAll();
@@ -22,15 +24,6 @@ namespace Reservas.MVC.Controllers
             }).ToList();
         }
 
-        private List<SelectListItem> GetHorarios()
-        {
-            var horarios = Crud<Horarios>.GetAll();
-            return horarios.Select(h => new SelectListItem
-            {
-                Value = h.Id.ToString(),
-                Text = $"{h.hora_inicio:hh\\:mm} - {h.hora_fin:hh\\:mm}"
-            }).ToList();
-        }
         [HttpGet]
         public JsonResult GetHorariosDisponibles(int canchaId, DateTime fecha)
         {
@@ -53,38 +46,43 @@ namespace Reservas.MVC.Controllers
             return Json(disponibles);
         }
 
-
-
-        // GET: ReservasController
         public ActionResult Index()
         {
-            var reservas = Crud<Reserva.Modelos.Reservas>.GetAll();
-            return View(reservas);
-        }
+            // Traemos la lista completa desde la API
+            var todasLasReservas = Crud<Reserva.Modelos.Reservas>.GetAll() ?? new List<Reserva.Modelos.Reservas>();
 
-        // GET: ReservasController/Details/5
-        public ActionResult Details(int id)
-        {
-            
-            return View();
-        }
+            // Obtenemos el correo del usuario actual
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-        // GET: Reservas/Create
-        public ActionResult Create(int? canchaId, DateTime? fecha)
-        {
-            ViewBag.Canchas = GetCanchas();
-            ViewBag.CanchaPreseleccionada = canchaId;
-
-            if (canchaId.HasValue && fecha.HasValue)
+            // Si eres Yurak (admin), enviamos la lista completa
+            if (userEmail == "yurianrango3@gmail.com")
             {
-                var todos = Crud<Horarios>.GetAll();
-                var ocupados = Crud<Reserva.Modelos.Reservas>.GetAll()
-                    .Where(r => r.CanchasId == canchaId && r.fecha_reserva.Date == fecha.Value.Date)
-                    .Select(r => r.HorariosId).ToList();
-
-                ViewBag.Horarios = todos.Where(h => !ocupados.Contains(h.Id)).ToList();
+                return View(todasLasReservas);
             }
-            else { ViewBag.Horarios = new List<Horarios>(); }
+            else
+            {
+                // Si es un cliente como Wally, filtramos para que vea solo lo suyo
+                var misReservas = todasLasReservas
+                    .Where(r => r.Clientes?.correo_cliente == userEmail)
+                    .ToList();
+
+                return View(misReservas);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult Create(int? canchaId)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            // Verificamos si eres tú (Yurak)
+            if (userEmail != "yurianrango3@gmail.com")
+            {
+                TempData["ErrorPermiso"] = "Solo la administradora puede crear reservas.";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Canchas = GetCanchas();
             return View();
         }
 
@@ -92,89 +90,72 @@ namespace Reservas.MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Reserva.Modelos.Reservas reserva)
         {
+            // Seguridad en el envío de datos
+            if (User.Identity?.Name != AdminEmail) return Forbid();
+
             try
             {
-                // 1. Identificar al usuario (Wally es ID 3)
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
-                reserva.ClientesId = !string.IsNullOrEmpty(userIdClaim) ? int.Parse(userIdClaim) : 3;
-
-                // 2. Limpieza para la API de Render
+                // Limpieza para PostgreSQL en Render
                 reserva.Clientes = null;
                 reserva.Canchas = null;
                 reserva.Horarios = null;
-
-                // 3. Formato de fecha compatible con PostgreSQL
                 reserva.fecha_reserva = DateTime.SpecifyKind(reserva.fecha_reserva.Date, DateTimeKind.Utc);
 
-                // 4. Ejecutar creación
+                // ID de usuario (Yurak)
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                reserva.ClientesId = !string.IsNullOrEmpty(userIdClaim) ? int.Parse(userIdClaim) : 1;
+
                 API_Consumer.Crud<Reserva.Modelos.Reservas>.Create(reserva);
 
-                return RedirectToAction(nameof(Index));
+                // Pasamos la fecha a Success sin usar el ID para evitar el 404
+                TempData["FechaExito"] = reserva.fecha_reserva.ToString("dd/MM/yyyy");
+                return RedirectToAction("Success");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Error: " + ex.Message);
-                ViewBag.Canchas = GetCanchas();
-                ViewBag.Horarios = new List<Horarios>();
-                return View(reserva);
+                return ReloadView(reserva);
             }
         }
 
-        // Método auxiliar para no repetir código de recarga
-        private ActionResult ReloadView(Reserva.Modelos.Reservas reserva)
+        public IActionResult Success()
         {
-            ViewBag.Canchas = GetCanchas();
-            ViewBag.Horarios = new List<Horarios>();
-            return View(reserva);
-        }
-
-        // GET: ReservasController/Edit/5
-        public ActionResult Edit(int id)
-        {
+           
             return View();
         }
 
-        // POST: ReservasController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ReservasController/Delete/5
         public ActionResult Delete(int id)
         {
+            if (User.Identity?.Name != AdminEmail) return RedirectToAction("Index");
+
             var reserva = Crud<Reserva.Modelos.Reservas>.GetById(id);
-            if (reserva == null)
-            {
-                return NotFound();
-            }
+            if (reserva == null) return NotFound();
             return View(reserva);
         }
 
-        // POST: ReservasController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Reserva.Modelos.Reservas reserva)
         {
+            if (User.Identity?.Name != AdminEmail) return Forbid();
+
             try
             {
                 Crud<Reserva.Modelos.Reservas>.Delete(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                ModelState.AddModelError("", "No se pudo eliminar: " + ex.Message);
                 return View();
             }
+        }
+
+        private ActionResult ReloadView(Reserva.Modelos.Reservas reserva)
+        {
+            ViewBag.Canchas = GetCanchas();
+            ViewBag.Horarios = new List<Horarios>();
+            return View(reserva);
         }
     }
 }
