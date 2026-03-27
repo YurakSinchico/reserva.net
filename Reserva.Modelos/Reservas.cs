@@ -20,6 +20,6 @@ namespace Reserva.Modelos
         [ForeignKey("HorariosId")]
         public int HorariosId { get; set; }
         public Horarios? Horarios { get; set; }
-        public object Horario { get; set; }
+        
     }
 }
