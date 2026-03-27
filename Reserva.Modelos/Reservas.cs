@@ -19,6 +19,7 @@ namespace Reserva.Modelos
         public Canchas? Canchas { get; set; }
         [ForeignKey("HorariosId")]
         public int HorariosId { get; set; }
-        public Horarios? Horarios { get; set; } 
+        public Horarios? Horarios { get; set; }
+        public object Horario { get; set; }
     }
 }

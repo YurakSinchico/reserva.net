@@ -1,0 +1,6 @@
+﻿/* Ajuste para que la tabla ocupe mejor el espacio si falta una columna */
+.elec-table th:nth-child(2),
+.elec-table td:nth-child(2) {
+    text-align: center;
+    width: 40%; /* Le damos más presencia a la hora de inicio */
+}

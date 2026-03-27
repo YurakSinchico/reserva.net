@@ -1,58 +1,192 @@
 ﻿@model Reserva.Modelos.Canchas
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-lg rounded-4">
-                <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <div class="display-6 text-primary mb-2"><i class="bi bi-plus-circle-dotted"></i></div>
-                        <h2 class="fw-bold">Nueva Cancha</h2>
-                        <p class="text-muted">Completa la información para habilitar el espacio</p>
+@{
+    ViewData["Title"] = "Nueva Cancha";
+}
+
+<style>
+    /* Fondo con imagen deportiva y filtro suave */
+    .page-background {
+        background: linear-gradient(135deg, rgba(240, 249, 247, 0.9), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=2000&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh;
+        padding: 40px 20px;
+        border-radius: 40px; /* Para que encaje en tu main-content */
+    }
+
+    /* Tarjeta estilo Floating Glass */
+    .card-premium {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 35px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    /* Encabezado con degradado pastel */
+    .header-banner {
+        background: linear-gradient(to right, #27F5CC, #a7f3d0);
+        padding: 40px;
+        text-align: center;
+        position: relative;
+    }
+
+    .header-icon-circle {
+        width: 70px;
+        height: 70px;
+        background: white;
+        border-radius: 22px;
+        display: grid;
+        place-items: center;
+        margin: -75px auto 20px auto;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        font-size: 1.8rem;
+        color: #0f172a;
+    }
+
+    /* Inputs Estilo "Soft-Fill" */
+    .soft-label {
+        font-weight: 800;
+        font-size: 0.75rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .input-pastel {
+        background: #f1f5f9 !important;
+        border: 2px solid transparent !important;
+        border-radius: 18px !important;
+        padding: 14px 20px !important;
+        font-weight: 600;
+        color: #0f172a;
+        transition: all 0.3s ease;
+    }
+
+        .input-pastel:focus {
+            background: white !important;
+            border-color: #27F5CC !important;
+            box-shadow: 0 0 20px rgba(39, 245, 204, 0.25) !important;
+            transform: translateY(-2px);
+        }
+
+    /* Botón de Guardar de Impacto */
+    .btn-save-modern {
+        background: #0f172a;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 18px;
+        font-weight: 800;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        width: 100%;
+        margin-top: 10px;
+    }
+
+        .btn-save-modern:hover {
+            background: #27F5CC;
+            color: #0f172a;
+            transform: scale(1.02) translateY(-3px);
+            box-shadow: 0 15px 30px rgba(39, 245, 204, 0.4);
+        }
+
+    /* Switch Estetizado */
+    .status-container {
+        background: #f8fafc;
+        border: 2px dashed #e2e8f0;
+        border-radius: 22px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .form-check-input:checked {
+        background-color: #27F5CC !important;
+        border-color: #27F5CC !important;
+    }
+</style>
+
+<div class="page-background">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-6 col-lg-8">
+
+                <div class="card-premium">
+                    <div class="header-banner">
+                        <h2 class="fw-800 m-0" style="color: #0f172a;">Configurar <span style="background: white; padding: 2px 10px; border-radius: 10px;">Cancha</span></h2>
+                        <p class="m-0 mt-2 text-dark opacity-75 fw-600">Completa los detalles para abrir el escenario</p>
                     </div>
 
-                    <form asp-action="Create" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-
-                        <div class="form-floating mb-3">
-                            <input asp-for="nombre_cancha" class="form-control border-0 bg-light rounded-3" placeholder="Ej: Cancha Central 1" required />
-                            <label asp-for="nombre_cancha">Nombre de la Cancha</label>
-                            <span asp-validation-for="nombre_cancha" class="text-danger small"></span>
+                    <div class="card-body px-5 pb-5 pt-4">
+                        <div class="header-icon-circle">
+                            <i class="bi bi-trophy-fill"></i>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="small text-muted mb-1 ms-2">Tipo de Deporte</label>
-                            <div class="input-group">
-                                <select asp-for="Tipo_CanchasId" class="form-select border-0 bg-light rounded-start-3" asp-items="ViewBag.Tipos" style="height: 58px;" required>
-                                    <option value="">Selecciona un tipo...</option>
-                                </select>
-                                <a asp-controller="TipoCanchas" asp-action="Create" class="btn btn-outline-primary d-flex align-items-center rounded-end-3 px-3" title="Añadir nuevo deporte">
-                                    <i class="bi bi-plus-lg"></i>
+                        <form asp-action="Create" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                            <div class="mb-4">
+                                <label asp-for="nombre_cancha" class="soft-label ms-2">Nombre del Escenario</label>
+                                <input asp-for="nombre_cancha" class="form-control input-pastel" placeholder="Ej: Estadio Olímpico Central" required />
+                                <span asp-validation-for="nombre_cancha" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="soft-label ms-2">Disciplina Deportiva</label>
+                                <div class="input-group">
+                                    <select asp-for="Tipo_CanchasId" class="form-select input-pastel" asp-items="ViewBag.Tipos" style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important;" required>
+                                        <option value="">Selecciona el deporte...</option>
+                                    </select>
+                                    <a asp-controller="TipoCanchas" asp-action="Create" class="btn btn-dark d-flex align-items-center px-4" style="border-radius: 0 18px 18px 0;" title="Añadir tipo">
+                                        <i class="bi bi-plus-circle-fill"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label asp-for="descripcion_cancha" class="soft-label ms-2">Ficha Técnica / Descripción</label>
+                                <textarea asp-for="descripcion_cancha" class="form-control input-pastel" style="height: 100px" placeholder="Indica tipo de césped, si tiene luz led, medidas, etc."></textarea>
+                            </div>
+
+                            <div class="mb-5">
+                                <div class="status-container">
+                                    <div>
+                                        <h6 class="m-0 fw-800 text-dark">¿Habilitar ahora?</h6>
+                                        <small class="text-muted">Estará disponible para reservas de inmediato.</small>
+                                    </div>
+                                    <div class="form-check form-switch m-0">
+                                        <input class="form-check-input" type="checkbox" asp-for="estado_cancha" style="width: 55px; height: 28px; cursor: pointer;" checked>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn-save-modern">
+                                    <i class="bi bi-check2-circle me-2"></i> PUBLICAR ESCENARIO
+                                </button>
+
+                                <a asp-action="Admin" class="btn btn-link text-decoration-none fw-bold text-muted mt-4 d-inline-block">
+                                    <i class="bi bi-arrow-left-short fs-5"></i> Volver al panel anterior
                                 </a>
                             </div>
-                            <span asp-validation-for="Tipo_CanchasId" class="text-danger small"></span>
-                        </div>
-
-                        <div class="form-floating mb-3">
-                            <textarea asp-for="descripcion_cancha" class="form-control border-0 bg-light rounded-3" style="height: 100px" placeholder="Detalles..."></textarea>
-                            <label asp-for="descripcion_cancha">Descripción / Notas</label>
-                        </div>
-
-                        <div class="form-check form-switch mb-4 p-0 d-flex justify-content-between align-items-center bg-light p-3 rounded-3">
-                            <label class="form-check-label fw-bold ms-2" for="estado_cancha">Habilitar inmediatamente</label>
-                            <input class="form-check-input me-2" type="checkbox" asp-for="estado_cancha" id="estado_cancha" checked>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-modern shadow-sm py-3 fw-bold">
-                                <i class="bi bi-check-lg me-2"></i>Guardar Cancha
-                            </button>
-                            <a asp-action="Admin" class="btn btn-link text-muted text-decoration-none small text-center">
-                                <i class="bi bi-arrow-left me-1"></i> Volver al panel
-                            </a>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
+
+                <div class="text-center mt-4 opacity-50">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162939.png" width="40" alt="Sport Icon">
+                    <p class="small fw-bold mt-2">© 2026 ECUMEX SYSTEM - IBARRA, ECUADOR</p>
+                </div>
+
             </div>
         </div>
     </div>

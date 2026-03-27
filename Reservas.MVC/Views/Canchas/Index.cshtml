@@ -4,158 +4,79 @@
     ViewData["Title"] = "Canchas Disponibles";
 }
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h2 class="fw-800 display-5 mb-2" style="letter-spacing: -1.5px;">
-            <i class="bi bi-dribbble me-2 text-primary"></i>Canchas <span style="color: #27F5CC;">Disponibles</span>
-        </h2>
-        <p class="text-muted fw-500">Selecciona el tipo de cancha y reserva tu espacio deportivo en segundos.</p>
-    </div>
+<link rel="stylesheet" href="~/css/canchas-vivid.css" asp-append-version="true" />
 
-    <div class="row g-4">
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var cancha in Model)
+<div class="bg-canchas-dinamico py-5">
+    <div class="container">
+        <header class="text-center mb-5">
+            <h2 class="display-4" style="font-weight: 900; letter-spacing: -2px; color: #0f172a;">
+                Canchas <span style="color: #27F5CC;">Disponibles</span>
+            </h2>
+            <p class="text-muted fs-5 fw-bold">RESERVA TU LUGAR EN LA VICTORIA</p>
+        </header>
+
+        <div class="row g-4">
+            @if (Model != null && Model.Any())
             {
-                var nombreCancha = cancha.nombre_cancha?.ToLower() ?? "";
-                var tipoRelacion = cancha.Tipo_Canchas?.nombre_tip_cancha;
+                @foreach (var cancha in Model)
+                {
+                    var tipo = cancha.Tipo_Canchas?.nombre_tip_cancha?.ToLower() ?? "general";
 
-                string tipoFinal = !string.IsNullOrEmpty(tipoRelacion) ? tipoRelacion.ToLower() :
-                nombreCancha.Contains("fut") ? "fútbol" :
-                nombreCancha.Contains("bas") ? "básquet" :
-                nombreCancha.Contains("voley") ? "vóley" : "general";
+                    // Configuración de visualización basada en el tipo
+                    string imgPath = tipo.Contains("fut") ? "/img/futbol.jpg" :
+                    tipo.Contains("bas") ? "/img/basquet.jpg" :
+                    tipo.Contains("voley") ? "/img/voley.jpg" : "/img/default.jpg";
 
-                string imagenUrl = tipoFinal.Contains("fut") ? "/img/futbol.jpg" :
-                tipoFinal.Contains("bas") ? "/img/basquet.jpg" :
-                tipoFinal.Contains("voley") ? "/img/voley.jpg" : "/img/default.jpg";
+                    string colorAccent = tipo.Contains("fut") ? "#10b981" :
+                    tipo.Contains("bas") ? "#f59e0b" :
+                    tipo.Contains("voley") ? "#0ea5e9" : "#64748b";
 
-                var badgeColor = tipoFinal.Contains("fut") ? "#10b981" :
-                tipoFinal.Contains("bas") ? "#f59e0b" :
-                tipoFinal.Contains("voley") ? "#0ea5e9" : "#64748b";
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card card-sport-vivid border-0 shadow-sm h-100">
 
-                <div class="col-md-4">
-                    <div class="card card-cancha-vivid h-100 shadow-sm border-0" style="border-radius: 20px; overflow: hidden;">
-
-                        <div class="img-wrapper" style="position: relative; height: 200px; overflow: hidden;">
-                            <img src="@imagenUrl" class="w-100 h-100" style="object-fit: cover;" alt="@cancha.nombre_cancha">
-
-                            <span class="badge-tipo" style="position: absolute; top: 15px; left: 15px; background: white; padding: 5px 15px; border-radius: 30px; font-weight: 700; font-size: 0.75rem; border-left: 4px solid @badgeColor; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: #0f172a; display: flex; align-items: center;">
-                                <i class="bi bi-tag-fill me-2" style="color: @badgeColor;"></i>
-                                @(char.ToUpper(tipoFinal[0]) + tipoFinal.Substring(1))
-                            </span>
-                        </div>
-
-                        <div class="card-body px-4 pb-4 d-flex flex-column">
-                            <h4 class="fw-800 mb-2" style="letter-spacing: -0.5px; color: #0f172a; margin-top: 15px;">
-                                @cancha.nombre_cancha
-                            </h4>
-
-                            <p class="text-muted small mb-4 flex-grow-1" style="line-height: 1.6;">
-                                @cancha.descripcion_cancha
-                            </p>
-
-                            <div class="d-flex align-items-center mb-4">
-                                @if (cancha.estado_cancha)
-                                {
-                                    <div class="p-2 rounded-circle me-2" style="background: rgba(39, 245, 204, 0.2);">
-                                        <div style="width: 8px; height: 8px; background: #27F5CC; border-radius: 50%;"></div>
-                                    </div>
-                                    <span class="small fw-800 text-success" style="text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.7rem;">Disponible ahora</span>
-                                }
-                                else
-                                {
-                                    <div class="p-2 rounded-circle me-2" style="background: rgba(239, 68, 68, 0.1);">
-                                        <div style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></div>
-                                    </div>
-                                    <span class="small fw-800 text-danger" style="text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.7rem;">No disponible</span>
-                                }
+                            <div class="img-wrapper">
+                                <img src="@imgPath" class="img-dynamic" alt="@cancha.nombre_cancha">
+                                <div class="badge-float" style="border-left: 4px solid @colorAccent; color: #0f172a;">
+                                    <span style="color: @colorAccent; margin-right: 5px;">●</span>
+                                    @tipo.ToUpper()
+                                </div>
                             </div>
 
-                            <div class="mt-auto">
-                                <a asp-controller="Reservas"
-                                   asp-action="Create"
-                                   asp-route-canchaId="@cancha.Id"
-                                   class="btn btn-reserva-vivid w-100 py-3 fw-bold @(cancha.estado_cancha ? "" : "disabled")"
-                                   style="border-radius: 12px; transition: all 0.3s ease;">
-                                    <i class="bi bi-calendar-check me-2"></i> Reservar Cancha
-                                </a>
+                            <div class="card-body p-4 d-flex flex-column">
+                                <h3 class="h4 fw-900 mb-2" style="color: #0f172a;">@cancha.nombre_cancha</h3>
+                                <p class="text-muted small mb-4 flex-grow-1 fw-bold">
+                                    @(cancha.descripcion_cancha ?? "Terreno de alta calidad para competencia profesional.")
+                                </p>
+
+                                <div class="mb-4">
+                                    @if (cancha.estado_cancha)
+                                    {
+                                        <div class="d-inline-flex align-items-center px-3 py-1 rounded-pill" style="background: #ecfdf5; color: #059669; font-size: 0.7rem; font-weight: 900;">
+                                            <i class="bi bi-check-circle-fill me-2"></i> DISPONIBLE
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-inline-flex align-items-center px-3 py-1 rounded-pill" style="background: #fef2f2; color: #dc3545; font-size: 0.7rem; font-weight: 900;">
+                                            <i class="bi bi-tools me-2"></i> MANTENIMIENTO
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="mt-auto">
+                                    <a asp-controller="Reservas"
+                                       asp-action="Create"
+                                       asp-route-canchaId="@cancha.Id"
+                                       class="btn-action-sport @(cancha.estado_cancha ? "" : "disabled")">
+                                        <i class="bi bi-calendar-check fs-5"></i>
+                                        <span>RESERVAR</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
             }
-        }
-        else
-        {
-            <div class="col-12 text-center py-5">
-                <div class="mb-3 display-1">🏟️</div>
-                <h3 class="fw-bold">No hay canchas listas</h3>
-                <p class="text-muted">Vuelve más tarde para ver los espacios disponibles.</p>
-            </div>
-        }
+        </div>
     </div>
 </div>
-
-<style>
-    .card-cancha-vivid {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-        .card-cancha-vivid:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
-        }
-
-    .btn-reserva-vivid {
-        background: #0f172a;
-        color: white;
-        border: none;
-    }
-
-        .btn-reserva-vivid:hover:not(.disabled) {
-            background: #27F5CC;
-            color: #0f172a;
-            box-shadow: 0 8px 20px rgba(39, 245, 204, 0.4);
-        }
-
-    .fw-800 {
-        font-weight: 800;
-    }
-
-    .fw-500 {
-        font-weight: 500;
-    }
-</style>
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            // Detectamos si la cancha ya vino seleccionada por defecto
-            var selectedCancha = $('#canchaSelect').val();
-            var selectedFecha = $('#fechaInput').val();
-
-            if (selectedCancha && selectedFecha) {
-                // Llamamos a tu función de carga de horarios automáticamente
-                cargarHorarios(selectedCancha, selectedFecha);
-            }
-
-            // También cargar si el usuario cambia la fecha manualmente
-            $('#fechaInput, #canchaSelect').change(function () {
-                var cId = $('#canchaSelect').val();
-                var fec = $('#fechaInput').val();
-                if (cId && fec) {
-                    cargarHorarios(cId, fec);
-                }
-            });
-        });
-
-        function cargarHorarios(canchaId, fecha) {
-            $.getJSON('@Url.Action("GetHorariosDisponibles", "Reservas")', { canchaId: canchaId, fecha: fecha }, function (data) {
-                var items = '<option value="">-- Seleccione el turno --</option>';
-                $.each(data, function (i, horario) {
-                    items += "<option value='" + horario.id + "'>" + horario.texto + "</option>";
-                });
-                $('#horarioSelect').html(items);
-            });
-        }
-    </script>
-}

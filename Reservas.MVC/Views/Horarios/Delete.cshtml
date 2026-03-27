@@ -1,64 +1,144 @@
 ﻿@model Reserva.Modelos.Horarios
+
 @{
     ViewData["Title"] = "Eliminar Horario";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card border-0 shadow-lg text-center" style="border-radius: 25px; overflow: hidden;">
+<style>
+    /* Contenedor con degradado de advertencia suave */
+    .delete-header-bg {
+        background: linear-gradient(to bottom, #fff5f5 0%, #ffffff 100%);
+        border-bottom: 1px solid rgba(239, 68, 68, 0.1);
+    }
 
-                <div class="py-5" style="background: #fff5f5;">
-                    <div class="display-1 text-danger mb-3">
-                        <i class="bi bi-exclamation-octagon-fill"></i>
+    /* Icono con animación de latido sutil en CSS */
+    .heartbeat-icon {
+        display: inline-block;
+        animation: heartbeat 1.5s ease-in-out infinite;
+        color: #ef4444;
+        font-size: 4.5rem;
+    }
+
+    @@keyframes heartbeat {
+        0% {
+            transform: scale(1);
+        }
+
+        14% {
+            transform: scale(1.1);
+        }
+
+        28% {
+            transform: scale(1);
+        }
+
+        42% {
+            transform: scale(1.1);
+        }
+
+        70% {
+            transform: scale(1);
+        }
+    }
+
+    /* Tarjeta inmersiva de peligro */
+    .card-delete-schedule {
+        border-radius: 30px;
+        border: none;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    /* Botón de acción crítica */
+    .btn-critical {
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 16px;
+        padding: 18px;
+        font-weight: 800;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+        .btn-critical:hover {
+            background: #dc2626;
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+            color: white;
+        }
+
+    .time-badge-delete {
+        background: #0f172a;
+        color: #27F5CC;
+        padding: 15px 25px;
+        border-radius: 20px;
+        display: inline-block;
+        font-size: 1.5rem;
+        font-weight: 800;
+        box-shadow: 0 8px 15px rgba(15, 23, 42, 0.1);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8">
+
+            <div class="card card-delete-schedule bg-white">
+                @* Cabecera de Alerta *@
+                <div class="delete-header-bg py-5 text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-calendar-x-fill heartbeat-icon"></i>
                     </div>
-                    <h2 class="fw-bold text-dark">¿Eliminar Registro?</h2>
-                    <p class="text-muted px-4 small">Esta acción borrará el horario de forma permanente de la base de datos.</p>
+                    <h2 class="fw-800 text-dark mb-1">¿Remover Turno?</h2>
+                    <p class="text-muted small px-5">Confirma que deseas eliminar este bloque de tiempo del sistema.</p>
                 </div>
 
-                <div class="card-body p-4">
-                    <div class="p-3 mb-4" style="background: #f8fafc; border-radius: 15px; border: 1px solid #eee;">
-                        <span class="text-uppercase small fw-bold text-muted d-block mb-1">Horario Seleccionado</span>
-                        <h3 class="fw-bold mb-0" style="color: #0f172a;">
+                <div class="card-body p-4 p-md-5 text-center">
+                    @* Información del Horario *@
+                    <div class="mb-4">
+                        <span class="text-uppercase small fw-800 text-muted d-block mb-3" style="letter-spacing: 1.5px;">Rango Horario</span>
+                        <div class="time-badge-delete mb-2">
                             @Model.hora_inicio.ToString(@"hh\:mm") — @Model.hora_fin.ToString(@"hh\:mm")
-                        </h3>
-                        <small class="text-muted">ID del Registro: #@Model.Id</small>
+                        </div>
+                        <div class="mt-2 text-muted">
+                            <small class="fw-bold">ID Registro: #@Model.Id</small>
+                        </div>
                     </div>
 
+                    @* Formulario de Eliminación *@
                     <form asp-action="Delete" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" />
 
                         <div class="d-grid gap-3">
-                            <button type="submit" class="btn btn-danger btn-lg py-3 fw-bold shadow-sm" style="border-radius: 15px; transition: 0.3s;">
-                                <i class="bi bi-trash3-fill me-2"></i> ELIMINAR AHORA
+                            <button type="submit" class="btn btn-critical">
+                                <i class="bi bi-trash3-fill me-2"></i> CONFIRMAR ELIMINACIÓN
                             </button>
-                            <a asp-action="Index" class="btn btn-light py-3 fw-semibold text-muted" style="border-radius: 15px;">
-                                Cancelar y volver
+
+                            <a asp-action="Index" class="btn btn-link text-decoration-none text-muted fw-bold">
+                                No, mantener este turno
                             </a>
                         </div>
                     </form>
+
+                    @* Validación de errores del servidor *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger mt-4 rounded-4 border-0 shadow-sm small">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <div asp-validation-summary="All" class="d-inline"></div>
+                        </div>
+                    }
                 </div>
 
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    <div class="alert alert-danger m-3 rounded-3 small">
-                        <div asp-validation-summary="All"></div>
-                    </div>
-                }
+                @* Pie de tarjeta sutil *@
+                <div class="bg-light py-3 text-center border-top">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-lock me-1"></i> Acción protegida por administrador
+                    </small>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
-
-<style>
-    body {
-        background-color: #f4f7f6;
-    }
-
-    .btn-danger:hover {
-        background-color: #dc3545;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
-    }
-</style>

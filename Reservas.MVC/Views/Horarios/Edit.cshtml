@@ -4,34 +4,146 @@
     ViewData["Title"] = "Editar Horario";
 }
 
-<div class="container mt-5">
-    <div class="card mx-auto shadow-lg p-0" style="max-width: 450px; border-radius: 20px; overflow: hidden; border: 1px solid #ffc107;">
-        <div class="bg-warning p-4 text-dark text-center">
-            <h4 class="fw-bold m-0">Editar Horario <span class="text-muted">#@Model.Id</span></h4>
-        </div>
+<style>
+    /* Tarjeta inmersiva con acento de edición */
+    .edit-schedule-card {
+        max-width: 480px;
+        background: white;
+        border-radius: 28px;
+        border: none;
+        box-shadow: 0 25px 50px rgba(15, 23, 42, 0.12);
+        overflow: hidden;
+    }
 
-        <div class="p-4">
-            <form asp-action="Edit">
-                <input type="hidden" asp-for="Id" />
+    .header-edit-gradient {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        padding: 35px 20px;
+        border-bottom: 4px solid #27F5CC;
+    }
 
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-muted">HORA INICIO</label>
-                    <input asp-for="hora_inicio" type="time" class="form-control form-control-lg" style="border-radius: 12px;" required />
+    /* Inputs de tiempo con estilo Pro */
+    .edit-time-group {
+        background-color: #f1f5f9;
+        border: 2px solid transparent;
+        border-radius: 16px;
+        padding: 12px 18px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .edit-time-group:focus-within {
+            background-color: white;
+            border-color: #27F5CC;
+            box-shadow: 0 0 0 4px rgba(39, 245, 204, 0.15);
+        }
+
+    .time-control-edit {
+        border: none;
+        background: transparent;
+        font-weight: 800;
+        color: #0f172a;
+        width: 100%;
+        outline: none;
+        font-size: 1.1rem;
+    }
+
+    /* Botón de actualización */
+    .btn-update-schedule {
+        background: #0f172a;
+        color: white;
+        border: none;
+        border-radius: 16px;
+        padding: 18px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-update-schedule:hover {
+            background: #27F5CC;
+            color: #0f172a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(39, 245, 204, 0.3);
+        }
+
+    .label-edit-caps {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #94a3b8;
+        letter-spacing: 1.2px;
+        margin-bottom: 8px;
+        display: block;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 d-flex justify-content-center">
+
+            <div class="edit-schedule-card">
+                @* Encabezado con ID del Registro *@
+                <div class="header-edit-gradient text-center">
+                    <div class="mb-2" style="font-size: 2.2rem; color: #27F5CC;">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+                    <h3 class="text-white fw-800 mb-0" style="letter-spacing: -1px;">
+                        Editar <span style="color: #27F5CC;">Horario</span>
+                    </h3>
+                    <div class="mt-2">
+                        <span class="badge" style="background: rgba(39, 245, 204, 0.1); color: #27F5CC; border: 1px solid rgba(39, 245, 204, 0.3);">
+                            Registro #@Model.Id
+                        </span>
+                    </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label small fw-bold text-muted">HORA FIN</label>
-                    <input asp-for="hora_fin" type="time" class="form-control form-control-lg" style="border-radius: 12px;" required />
+                <div class="p-4 p-md-5">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row">
+                            @* Hora Inicio *@
+                            <div class="col-12 mb-4">
+                                <label class="label-edit-caps ms-2">Hora de Apertura</label>
+                                <div class="edit-time-group d-flex align-items-center">
+                                    <i class="bi bi-clock-fill me-3 text-muted"></i>
+                                    <input asp-for="hora_inicio" type="time" class="time-control-edit" required />
+                                </div>
+                                <span asp-validation-for="hora_inicio" class="text-danger small ms-2"></span>
+                            </div>
+
+                            @* Hora Fin *@
+                            <div class="col-12 mb-5">
+                                <label class="label-edit-caps ms-2">Hora de Cierre</label>
+                                <div class="edit-time-group d-flex align-items-center">
+                                    <i class="bi bi-clock me-3 text-muted"></i>
+                                    <input asp-for="hora_fin" type="time" class="time-control-edit" required />
+                                </div>
+                                <span asp-validation-for="hora_fin" class="text-danger small ms-2"></span>
+                            </div>
+                        </div>
+
+                        @* Acciones *@
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-update-schedule">
+                                <i class="bi bi-arrow-repeat me-2"></i> ACTUALIZAR CAMBIOS
+                            </button>
+
+                            <a asp-action="Index" class="btn btn-link text-decoration-none text-muted fw-bold small text-center">
+                                <i class="bi bi-x-circle me-1"></i> Cancelar edición
+                            </a>
+                        </div>
+                    </form>
                 </div>
 
-                <button type="submit" class="btn btn-warning w-100 py-3 fw-bold shadow" style="border-radius: 12px;">
-                    ACTUALIZAR CAMBIOS
-                </button>
-
-                <div class="text-center mt-3">
-                    <a asp-action="Index" class="text-decoration-none text-muted small">Cancelar y volver</a>
+                @* Pie de tarjeta descriptivo *@
+                <div class="bg-light py-3 text-center border-top">
+                    <p class="mb-0 text-muted small px-4">
+                        <i class="bi bi-shield-check me-1"></i> La actualización se reflejará inmediatamente en el portal de reservas.
+                    </p>
                 </div>
-            </form>
+            </div>
+
         </div>
     </div>
 </div>

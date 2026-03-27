@@ -1,0 +1,198 @@
+﻿/* 1. FONDO Y ESTRUCTURA BASE */
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1600&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
+}
+
+/* 2. TARJETA DE REGISTRO */
+.elec-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(15px);
+    border-radius: 32px;
+    width: 100%;
+    max-width: 850px;
+    overflow: hidden;
+    animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 3. ENCABEZADO */
+.elec-card-header {
+    background: #0f172a;
+    padding: 2.5rem;
+    color: white;
+}
+
+/* 4. FORMULARIO Y TITULOS */
+.elec-title {
+    color: #0f172a;
+    font-weight: 900;
+    border-left: 5px solid #27F5CC;
+    padding-left: 12px;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+}
+
+.elec-form-control {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    padding: 12px 16px;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+    .elec-form-control:focus {
+        border-color: #27F5CC;
+        box-shadow: 0 0 0 4px rgba(39, 245, 204, 0.1);
+        background: white;
+        outline: none;
+    }
+
+/* 5. BOTONES */
+.btn-register {
+    background: #0f172a;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-weight: 800;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .btn-register:hover {
+        background: #27F5CC;
+        color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(39, 245, 204, 0.3);
+    }
+
+.btn-cancel {
+    background: #f1f5f9;
+    color: #64748b;
+    text-decoration: none;
+    padding: 15px;
+    font-weight: 700;
+    display: block;
+    text-align: center;
+    border-radius: 14px;
+    transition: background 0.2s;
+}
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+/* CONTENEDOR PRINCIPAL */
+.reservas-container {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* HEADER DE LA TABLA */
+.table-header-dark {
+    background: #0f172a;
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 20px;
+}
+
+/* ESTILO DE LA TABLA */
+.elec-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+    .elec-table thead th {
+        background: #f8fafc;
+        color: #64748b;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 15px;
+        border: none;
+    }
+
+    .elec-table tbody tr {
+        transition: transform 0.2s ease;
+    }
+
+        .elec-table tbody tr:hover {
+            transform: scale(1.01);
+        }
+
+    .elec-table tbody td {
+        background: white;
+        padding: 15px;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+/* PÍLDORAS Y BADGES */
+.badge-cancha {
+    background: rgba(39, 245, 204, 0.1);
+    color: #0ea5e9;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    border: 1px solid #27F5CC;
+}
+
+.badge-horario {
+    color: #6366f1;
+    font-weight: 700;
+}
+
+.badge-user {
+    width: 35px;
+    height: 35px;
+    background: #0ea5e9;
+    color: white;
+    border-radius: 50%;
+    display: inline-grid;
+    place-items: center;
+    font-weight: 800;
+    margin-right: 10px;
+}
+
+/* BOTÓN CANCELAR */
+.btn-cancelar {
+    background: white;
+    color: #ef4444;
+    border: 1px solid #fee2e2;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+    .btn-cancelar:hover {
+        background: #ef4444;
+        color: white;
+    }

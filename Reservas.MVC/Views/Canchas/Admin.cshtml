@@ -1,95 +1,85 @@
 ﻿@model IEnumerable<Reserva.Modelos.Canchas>
 
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center my-4">
-        <h2 class="fw-bold">Gestión de Inventario</h2>
-        <a asp-action="Create" class="btn btn-dark btn-modern">
-            <i class="bi bi-plus-lg me-2"></i>Nueva Cancha
-        </a>
-    </div>
+@{
+    ViewData["Title"] = "Gestión de Inventario";
+}
 
-    <div class="bg-white p-3 rounded-4 shadow-sm">
-        <table class="table align-middle">
-            <thead class="text-muted small text-uppercase">
-                <tr>
-                    <th>Cancha</th>
-                    <th>Tipo</th>
-                    <th>Estado</th>
-                    <th class="text-end">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+<style>
+    /* Esto quita cualquier fondo gris que ponga el Layout base solo en esta página */
+    .main-content {
+        background: transparent !important;
+    }
+</style>
+
+<div class="admin-bg-wallpaper">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="animate__animated animate__fadeInLeft">
+                <span class="badge bg-dark text-white mb-2 px-3 py-2" style="border-radius: 8px; font-size: 0.65rem;">SISTEMA DE GESTIÓN</span>
+                <h2 class="fw-800 display-6" style="letter-spacing: -2px;">Panel de <span style="color: #27F5CC;">Inventario</span></h2>
+            </div>
+
+            <a asp-action="Create" class="btn btn-dark btn-modern shadow-lg px-4 py-2">
+                <i class="bi bi-plus-lg me-2"></i> NUEVO ESCENARIO
+            </a>
+        </div>
+
+        <div class="admin-table-container animate__animated animate__fadeInUp">
+            <table class="table align-middle border-0 mb-0">
+                <thead class="text-muted small text-uppercase">
                     <tr>
-                        <td>
-                            <div class="fw-bold">@item.nombre_cancha</div>
-                            <div class="small text-muted">ID: @item.Id</div>
-                        </td>
-                        <td>
-                            <span class="badge border text-dark fw-normal">@item.Tipo_Canchas?.nombre_tip_cancha</span>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" @(item.estado_cancha ? "checked" : "") disabled>
-                            </div>
-                        </td>
-                        <td class="text-end">
-                            <div class="d-flex justify-content-end gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light btn-sm rounded-3">
-                                    <i class="bi bi-pencil text-primary"></i>
-                                </a>
-
-                                @* Cambiamos el submit por un botón normal con una clase para el script *@
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline form-eliminar">
-                                    <button type="button" class="btn btn-light btn-sm rounded-3 btn-delete">
-                                        <i class="bi bi-trash text-danger"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                        <th class="border-0">Escenario</th>
+                        <th class="border-0 text-center">Categoría</th>
+                        <th class="border-0 text-center">Estado</th>
+                        <th class="border-0 text-end">Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.03);">
+                            <td class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3 text-primary">
+                                        <i class="bi bi-trophy-fill"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">@item.nombre_cancha</div>
+                                        <div class="small text-muted">ID: @item.Id</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-light text-dark fw-500 border-0 px-3 py-2" style="border-radius: 8px;">
+                                    @(item.Tipo_Canchas?.nombre_tip_cancha ?? "General")
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                @if (item.estado_cancha)
+                                {
+                                    <span class="text-success fw-bold small"><i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> Operativa</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger fw-bold small"><i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> Mantenimiento</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-white border-0 shadow-sm rounded-3 p-2">
+                                        <i class="bi bi-pencil-square text-primary"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('¿Eliminar esta cancha?');">
+                                        <button type="submit" class="btn btn-sm btn-white border-0 shadow-sm rounded-3 p-2">
+                                            <i class="bi bi-trash3-fill text-danger"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        // Escuchamos el clic en los botones de borrar
-        $('.btn-delete').on('click', function (e) {
-            var form = $(this).closest('form'); // Buscamos el formulario padre
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Esta acción eliminará la cancha permanentemente",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33', // Rojo para eliminar
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true,
-                borderRadius: '1.25rem' // Para que combine con tus rounded-4
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit(); // Si confirma, enviamos el formulario
-                }
-            })
-        });
-    </script>
-}
-@if (TempData["Mensaje"] != null)
-{
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: '¡Hecho!',
-            text: '@TempData["Mensaje"]',
-            timer: 2000,
-            showConfirmButton: false,
-            borderRadius: '1rem'
-        });
-    </script>
-}

@@ -1,11 +1,11 @@
 ﻿using API_Consumer;
 using Microsoft.AspNetCore.Mvc;
-using Reserva.Modelos; // Asegúrate de que este namespace sea el de tu proyecto de Modelos
+using Reserva.Modelos; 
 using System.Net.Http.Json;
 
 namespace Reservas.MVC.Controllers
 {
-    // Cambiamos el nombre a TipoCanchasController (sin guion bajo)
+   
     public class TipoCanchasController : Controller
     {
         private readonly HttpClient _http;
@@ -44,17 +44,16 @@ namespace Reservas.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Llamamos al endpoint de la API "Tipo_Canchas"
                 var response = await _http.PostAsJsonAsync("Tipo_Canchas", tipo);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // Al terminar con éxito, regresamos al formulario de Nueva Cancha
+                    
                     return RedirectToAction("Create", "Canchas");
                 }
             }
 
-            // Si hay error, regresamos a la vista con los datos actuales
+            
             return View(tipo);
         }
     }

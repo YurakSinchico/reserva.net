@@ -2,37 +2,28 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Reserva.Modelos;
+using System;
+using System.Collections.Generic;
 
 namespace Reservas.MVC.Controllers
 {
     public class HorariosController : Controller
     {
-        // GET: HorariosController
+        // GET: Horarios
         public ActionResult Index()
         {
-            // Forzamos que use el modelo que la vista espera
-            List<Reserva.Modelos.Horarios> horarios = Crud<Reserva.Modelos.Horarios>.GetAll();
+            // Mantenemos tu lógica de obtener la lista completa
+            List<Reserva.Modelos.Horarios> horarios = Crud<Reserva.Modelos.Horarios>.GetAll() ?? new List<Horarios>();
             return View(horarios);
         }
 
-        // GET: HorariosController/Details/5
-        public ActionResult Details(int id)
-        {
-            var horarios =Crud<Horarios>.GetById(id);
-            if (horarios == null)
-            {
-                return NotFound();
-            }
-            return View(horarios);
-        }
-
-        // GET: HorariosController/Create
+        // GET: Horarios/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: HorariosController/Create
+        // POST: Horarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -41,86 +32,72 @@ namespace Reservas.MVC.Controllers
             {
                 var nuevoHorario = new Reserva.Modelos.Horarios
                 {
-                    // Parseamos el string del formulario directamente a TimeOnly
+                    // Parseo de seguridad para TimeOnly
                     hora_inicio = TimeOnly.Parse(collection["hora_inicio"]),
                     hora_fin = TimeOnly.Parse(collection["hora_fin"]),
-                    dia = collection["dia"] // Enviamos el valor del texto
+                    dia = collection["dia"]
                 };
 
-                API_Consumer.Crud<Reserva.Modelos.Horarios>.Create(nuevoHorario);
+                Crud<Reserva.Modelos.Horarios>.Create(nuevoHorario);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Verifica que los campos estén llenos: " + ex.Message);
+                ModelState.AddModelError("", "Error al crear: " + ex.Message);
                 return View();
             }
         }
-        // GET: HorariosController/Edit/5
+
+        // GET: Horarios/Edit/5
         public ActionResult Edit(int id)
         {
             var horario = Crud<Horarios>.GetById(id);
-            if (horario == null)
-            {
-                return NotFound();
-            }
+            if (horario == null) return NotFound();
             return View(horario);
         }
 
-        // POST: HorariosController/Edit/5
+        // POST: Horarios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Horarios horario)
         {
             try
             {
-                // Mantenemos tu lógica de actualización
                 Crud<Horarios>.Update(id, horario);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return View();
+                return View(horario);
             }
         }
 
-        // GET: HorariosController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            var horario = Crud<Horarios>.GetById(id);
-            if (horario == null)
-            {
-                return NotFound();
-            }
-            return View(horario);
-        }
-
-        // POST: HorariosController/Delete/5
+        // POST: Horarios/Delete/5
+        // Este es el método que llama tu botón "Eliminar" de la tabla
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection) // Cambiado para evitar conflictos de modelo
+        public ActionResult Delete(int id)
         {
             try
             {
-                // Esta línea ejecuta el DELETE físico en tu base de datos
                 bool eliminado = Crud<Horarios>.Delete(id);
 
                 if (eliminado)
                 {
-                    return RedirectToAction(nameof(Index));
+                    TempData["Mensaje"] = "Horario eliminado correctamente.";
                 }
                 else
                 {
-                    ModelState.AddModelError("", "No se pudo eliminar el registro de la base de datos.");
-                    return View(Crud<Horarios>.GetById(id));
+                    TempData["Error"] = "No se pudo eliminar el registro.";
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Error al conectar con la base de datos: " + ex.Message);
-                return View(Crud<Horarios>.GetById(id));
+                TempData["Error"] = "Error de base de datos: " + ex.Message;
             }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

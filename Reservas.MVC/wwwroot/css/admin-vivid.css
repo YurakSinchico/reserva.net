@@ -1,0 +1,43 @@
+﻿/* admin-vivid.css */
+.cuerpo-gestion {
+    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1508098662722-e94543951f0b?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Título con Negrita Imponente */
+.titulo-vivid {
+    font-weight: 900 !important;
+    font-size: 3rem;
+    letter-spacing: -2px;
+}
+
+.text-neon {
+    color: #27F5CC !important;
+    text-shadow: 0 0 15px rgba(39, 245, 204, 0.4);
+}
+
+/* Tarjeta de Cristal para la Tabla */
+.panel-glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 30px;
+}
+
+/* Cápsulas de Tiempo Visibles */
+.pill-tiempo {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 800; /* Negrita para los números */
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}

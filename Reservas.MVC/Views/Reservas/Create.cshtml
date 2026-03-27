@@ -2,77 +2,67 @@
 @model Reservas
 
 @{
-    ViewData["Title"] = "Nueva Reserva";
+    // Obtener nombre de la cancha para el diseño
+    var nombreCancha = ((IEnumerable<SelectListItem>)ViewBag.Canchas)
+                        .FirstOrDefault(x => x.Value == Model.CanchasId.ToString())?.Text
+                        ?? "Cancha Deportiva";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-lg" style="border-radius: 15px; border: none;">
-        <div class="card-header bg-dark text-white text-center py-3" style="border-radius: 15px 15px 0 0;">
-            <h4 class="mb-0 fw-bold">Nueva Reserva</h4>
-        </div>
-        <div class="card-body p-4">
-            <form asp-action="Create" method="post">
-                @Html.AntiForgeryToken()
+@* Referencia al archivo de estilos externo *@
+<link rel="stylesheet" href="~/css/reserva-estilos.css" />
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold small text-muted">CANCHA</label>
-                    <select id="canchaSelect" asp-for="CanchasId" class="form-select form-control-lg" onchange="actualizar()" required>
-                        <option value="">-- Seleccione una cancha --</option>
-                        @if (ViewBag.Canchas != null)
-                        {
-                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.Canchas)
-                            {
-                                // Comparamos el ID para mantener la selección al recargar
-                                bool esSeleccionada = ViewBag.CanchaPreseleccionada?.ToString() == item.Value;
-                                <option value="@item.Value" selected="@(esSeleccionada ? "selected" : null)">@item.Text</option>
-                            }
-                        }
-                    </select>
+<div class="reserva-page-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+
+                <div class="card reserva-card">
+                    <div class="card-header reserva-header text-center text-white">
+                        <h3 class="fw-bold mb-1">Nueva Reserva</h3>
+                        <p class="mb-0 opacity-75 small">Cancha: <strong>@nombreCancha</strong></p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form asp-action="Create" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="CanchasId" />
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-secondary small">1. FECHA DE RESERVA</label>
+                                <div class="input-group reserva-input-group">
+                                    <input type="date" asp-for="fecha_reserva" class="form-control border-0 bg-transparent"
+                                           required min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                           value="@Model.fecha_reserva.ToString("yyyy-MM-dd")" />
+                                    <button type="submit" name="enviar" value="Ver turnos" class="btn btn-dark px-4">
+                                        Ver turnos
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <label class="form-label fw-bold text-secondary small">2. HORARIOS DISPONIBLES</label>
+                                <div class="input-group reserva-input-group">
+                                    <select asp-for="HorariosId" class="form-select border-0 bg-transparent" required>
+                                        <option value="">-- Seleccione el turno --</option>
+                                        @if (ViewBag.Horarios != null)
+                                        {
+                                            foreach (var h in (IEnumerable<Horarios>)ViewBag.Horarios)
+                                            {
+                                                <option value="@h.Id">@h.hora_inicio.ToString(@"HH\:mm") - @h.hora_fin.ToString(@"HH\:mm")</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" name="enviar" value="CONFIRMAR MI RESERVA" class="btn btn-primary w-100 reserva-btn-confirmar">
+                                Confirmar mi Reserva
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold small text-muted">FECHA DE RESERVA</label>
-                    <input type="date" id="fechaInput" asp-for="fecha_reserva" class="form-control form-control-lg"
-                           onchange="actualizar()" required min="@DateTime.Now.ToString("yyyy-MM-dd")"
-                           value="@Model.fecha_reserva.ToString("yyyy-MM-dd")" />
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label fw-bold small text-muted">HORARIOS DISPONIBLES</label>
-                    <select asp-for="HorariosId" class="form-select form-control-lg" id="horarioSelect" required>
-                        <option value="">-- Seleccione el turno --</option>
-                        @if (ViewBag.Horarios != null && ((IEnumerable<Horarios>)ViewBag.Horarios).Any())
-                        {
-                            @foreach (var h in (IEnumerable<Horarios>)ViewBag.Horarios)
-                            {
-                                <option value="@h.Id">@h.hora_inicio.ToString(@"HH\:mm") - @h.hora_fin.ToString(@"HH\:mm")</option>
-                            }
-                        }
-                        else
-                        {
-                            <option value="" disabled>No hay horarios disponibles para esta selección.</option>
-                        }
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow-sm" style="border-radius: 10px; background-color: #0d6efd;">
-                    CONFIRMAR MI RESERVA
-                </button>
-            </form>
+            </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        function actualizar() {
-            const cancha = document.getElementById("canchaSelect").value;
-            const fecha = document.getElementById("fechaInput").value;
-
-            // Al cambiar cualquiera de los dos, recargamos pasando ambos datos por la URL
-            if (cancha && fecha) {
-                window.location.href = `/Reservas/Create?canchaId=${cancha}&fecha=${fecha}`;
-            }
-        }
-    </script>
-}

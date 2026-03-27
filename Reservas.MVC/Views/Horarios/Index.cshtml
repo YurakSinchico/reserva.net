@@ -1,71 +1,63 @@
 ﻿@model IEnumerable<Reserva.Modelos.Horarios>
+<link rel="stylesheet" href="~/css/admin-vivid.css" />
 
-@{
-    ViewData["Title"] = "Gestión de Horarios";
-}
-
-<div class="container mt-4 mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-800 text-dark mb-0">Gestión de <span style="color: #27F5CC;">Horarios</span></h2>
-            <p class="text-muted small">Administra los bloques de tiempo disponibles para las canchas</p>
+<div class="cuerpo-gestion p-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <h1 class="titulo-vivid mb-0">
+                    Gestión de <span class="text-neon">Horarios</span>
+                </h1>
+                <p class="opacity-50 fs-5 fw-bold">ADMINISTRACIÓN DE BLOQUES DE TIEMPO</p>
+            </div>
+            <a asp-action="Create" class="btn p-3 shadow-lg fw-900"
+               style="background: #27F5CC; color: #0f172a; border-radius: 15px;">
+                <i class="bi bi-plus-circle-fill me-2"></i> NUEVO HORARIO
+            </a>
         </div>
-        <a asp-action="Create" class="btn btn-dark px-4 py-2 shadow-sm d-flex align-items-center" style="border-radius: 12px; font-weight: 600;">
-            <i class="bi bi-plus-circle-fill me-2"></i> Nuevo Horario
-        </a>
-    </div>
 
-    <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead style="background-color: #f8fafc;">
-                    <tr>
-                        <th class="py-4 ps-4 text-muted small text-uppercase fw-bold" style="letter-spacing: 1px;">ID</th>
-                        <th class="py-4 text-muted small text-uppercase fw-bold" style="letter-spacing: 1px;">Hora Inicio</th>
-                        <th class="py-4 text-muted small text-uppercase fw-bold" style="letter-spacing: 1px;">Hora Fin</th>
-                        <th class="py-4 text-end pe-4 text-muted small text-uppercase fw-bold" style="letter-spacing: 1px;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="ps-4">
-                                <span class="badge bg-light text-dark rounded-pill px-3 py-2">#@item.Id</span>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-clock-fill me-2" style="color: #27F5CC;"></i>
-                                    <span class="fw-bold text-dark fs-5">@item.hora_inicio.ToString(@"hh\:mm")</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="text-muted fw-semibold">@item.hora_fin.ToString(@"hh\:mm")</span>
-                            </td>
-                            <td class="text-end pe-4">
-                                <a asp-action="Delete" asp-route-id="@item.Id"
-                                   class="btn btn-outline-danger btn-sm px-3 py-2 d-inline-flex align-items-center shadow-sm"
-                                   style="border-radius: 10px; transition: all 0.3s ease; border-width: 2px;"
-                                   onclick="return confirm('¿Estás seguro de que deseas eliminar este horario?')">
-                                    <i class="bi bi-trash3-fill me-2"></i> Eliminar
-                                </a>
-                            </td>
+        <div class="panel-glass">
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle text-white">
+                    <thead>
+                        <tr class="text-neon border-bottom border-secondary">
+                            <th class="py-3 fw-900">REF</th>
+                            <th class="py-3 text-center fw-900">HORA APERTURA</th>
+                            <th class="py-3 text-center fw-900">HORA CIERRE</th>
+                            <th class="py-3 text-end fw-900">GESTIÓN</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="border-bottom border-white border-opacity-10">
+                                <td class="fw-bold opacity-75">ID-@item.Id</td>
+                                <td class="text-center">
+                                    <div class="pill-tiempo">
+                                        <i class="bi bi-clock-fill text-neon"></i>
+                                        @item.hora_inicio.ToString(@"HH\:mm")
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="pill-tiempo" style="border-color: #27F5CC;">
+                                        <i class="bi bi-door-closed-fill text-neon"></i>
+                                        @item.hora_fin.ToString(@"HH\:mm")
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-danger border-2 fw-bold px-4"
+                                                onclick="return confirm('¿Eliminar horario?')">
+                                            ELIMINAR
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
-<style>
-    /* Efecto de elevación en la fila al pasar el mouse */
-    .table-hover tbody tr:hover {
-        background-color: rgba(39, 245, 204, 0.03);
-        transition: background-color 0.2s ease;
-    }
-
-    .fw-800 {
-        font-weight: 800;
-    }
-</style>

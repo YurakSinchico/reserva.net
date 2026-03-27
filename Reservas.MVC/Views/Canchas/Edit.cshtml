@@ -1,82 +1,180 @@
 ﻿@model Reserva.Modelos.Canchas
+
 @{
     ViewData["Title"] = "Editar Cancha";
 }
 
-<div class="container mt-4 mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<style>
+    /* Contenedor principal con bordes suaves */
+    .edit-main-container {
+        border-radius: 30px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+    }
+
+    /* Panel lateral informativo */
+    .info-sidebar {
+        background: linear-gradient(165deg, #0f172a 0%, #1e293b 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+    }
+
+    .icon-box-edit {
+        background: rgba(39, 245, 204, 0.1);
+        border: 2px dashed #27F5CC;
+        border-radius: 25px;
+        padding: 30px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .edit-main-container:hover .icon-box-edit {
+        transform: rotate(-5deg) scale(1.05);
+    }
+
+    /* Estilización de Inputs */
+    .form-edit-control {
+        background-color: #f8fafc !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 15px !important;
+        padding: 14px 20px !important;
+        transition: all 0.3s ease !important;
+    }
+
+        .form-edit-control:focus {
+            border-color: #27F5CC !important;
+            background-color: white !important;
+            box-shadow: 0 0 0 4px rgba(39, 245, 204, 0.15) !important;
+        }
+
+    /* Botón de guardado */
+    .btn-save-changes {
+        background: #0f172a;
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 18px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-save-changes:hover {
+            background: #27F5CC;
+            color: #0f172a;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(39, 245, 204, 0.3);
+        }
+
+    /* Switch Personalizado Turquesa */
+    .custom-switch-check:checked {
+        background-color: #27F5CC !important;
+        border-color: #27F5CC !important;
+    }
+
+    .fw-800 {
+        font-weight: 800;
+    }
+</style>
+
+<div class="container py-5">
+    @* Encabezado de Navegación *@
+    <div class="d-flex justify-content-between align-items-end mb-4 px-2">
         <div>
-            <h2 class="fw-bold text-dark mb-0">Editar <span style="color: #27F5CC;">Cancha</span></h2>
-            <p class="text-muted small">ID del Registro: #@Model.Id</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a asp-action="Admin" class="text-decoration-none text-muted">Inventario</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Editor</li>
+                </ol>
+            </nav>
+            <h2 class="fw-800 text-dark mb-0" style="letter-spacing: -1.5px;">
+                Modificar <span style="color: #27F5CC;">Registro</span>
+            </h2>
         </div>
-        <a asp-action="Admin" class="btn btn-outline-secondary px-3 py-2" style="border-radius: 12px; font-weight: 600;">
-            <i class="bi bi-arrow-left me-1"></i> Volver al Panel
-        </a>
+        <span class="badge bg-dark px-3 py-2" style="border-radius: 10px; opacity: 0.8;">
+            ID: #@Model.Id
+        </span>
     </div>
 
-    <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+    <div class="edit-main-container">
         <div class="row g-0">
-            <div class="col-md-4 d-none d-md-block p-5 text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
-                <div class="text-center mt-4">
-                    <div class="mb-4" style="display: inline-block; padding: 20px; border: 2px solid #27F5CC; border-radius: 20px;">
-                        <i class="bi bi-pencil-fill display-4" style="color: #27F5CC;"></i>
-                    </div>
-                    <h4 class="fw-bold">Actualización de Inventario</h4>
-                    <p class="opacity-75 small">Modifica los detalles técnicos y la disponibilidad de la cancha para los deportistas.</p>
+            @* Lado Izquierdo: Branding/Info *@
+            <div class="col-md-4 info-sidebar text-white text-center">
+                <div class="icon-box-edit">
+                    <i class="bi bi-pencil-square display-3" style="color: #27F5CC;"></i>
+                </div>
+                <h3 class="fw-800 mb-3">Editor de Espacios</h3>
+                <p class="opacity-75 small px-3">
+                    Asegúrate de que el nombre y la categoría sean precisos para evitar confusiones en las reservas.
+                </p>
+                <div class="mt-4 pt-3 border-top border-secondary w-75 opacity-50">
+                    <small>Última actualización: @DateTime.Now.ToString("dd/MM/yyyy")</small>
                 </div>
             </div>
 
-            <div class="col-md-8 p-5 bg-white">
+            @* Lado Derecho: Formulario *@
+            <div class="col-md-8 p-5">
                 <form asp-action="Edit" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Id" />
 
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-muted small text-uppercase">Nombre de la Cancha</label>
-                        <input asp-for="nombre_cancha" class="form-control form-control-lg border-2 shadow-sm" style="border-radius: 12px;" required />
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-muted small text-uppercase">Categoría / Tipo</label>
-                        <select asp-for="Tipo_CanchasId" class="form-select form-control-lg border-2 shadow-sm" style="border-radius: 12px;" asp-items="ViewBag.Tipos">
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-muted small text-uppercase">Descripción</label>
-                        <textarea asp-for="descripcion_cancha" class="form-control border-2 shadow-sm" style="border-radius: 12px; height: 100px;"></textarea>
-                    </div>
-
-                    <div class="mb-4 d-flex align-items-center justify-content-between p-3" style="background: #f8fafc; border-radius: 15px; border: 1px solid #eee;">
-                        <div>
-                            <label class="form-label fw-bold text-dark mb-0">Habilitar Cancha</label>
-                            <p class="text-muted small mb-0">Si está inactivo, no aparecerá para reservas.</p>
+                    <div class="row">
+                        @* Nombre *@
+                        <div class="col-12 mb-4">
+                            <label asp-for="nombre_cancha" class="form-label small fw-800 text-uppercase text-muted ms-2">Nombre de la Cancha</label>
+                            <input asp-for="nombre_cancha" class="form-control form-edit-control" placeholder="Ej: Cancha Central" required />
+                            <span asp-validation-for="nombre_cancha" class="text-danger small"></span>
                         </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input custom-switch" type="checkbox" asp-for="estado_cancha" style="width: 3.5rem; height: 1.75rem; cursor: pointer;">
-                        </div>
-                    </div>
 
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-dark btn-lg py-3 fw-bold shadow-sm" style="border-radius: 12px;">
-                            <i class="bi bi-check-circle-fill me-2" style="color: #27F5CC;"></i> GUARDAR CAMBIOS
-                        </button>
+                        @* Categoría *@
+                        <div class="col-12 mb-4">
+                            <label class="form-label small fw-800 text-uppercase text-muted ms-2">Disciplina Deportiva</label>
+                            <select asp-for="Tipo_CanchasId" class="form-select form-edit-control" asp-items="ViewBag.Tipos" required>
+                            </select>
+                        </div>
+
+                        @* Descripción *@
+                        <div class="col-12 mb-4">
+                            <label asp-for="descripcion_cancha" class="form-label small fw-800 text-uppercase text-muted ms-2">Notas Técnicas</label>
+                            <textarea asp-for="descripcion_cancha" class="form-control form-edit-control" style="height: 120px;" placeholder="Detalles sobre el estado del césped, luz, etc."></textarea>
+                        </div>
+
+                        @* Control de Disponibilidad *@
+                        <div class="col-12 mb-5">
+                            <div class="p-3 d-flex align-items-center justify-content-between shadow-sm" style="background: white; border: 1px solid #e2e8f0; border-radius: 20px;">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-2 rounded-circle me-3" style="background: rgba(39, 245, 204, 0.1);">
+                                        <i class="bi bi-broadcast text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <label class="form-check-label fw-800 text-dark d-block mb-0" for="estado_cancha">Estado de Publicación</label>
+                                        <small class="text-muted small">Visible para los deportistas</small>
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch m-0">
+                                    <input class="form-check-input custom-switch-check" type="checkbox" asp-for="estado_cancha" id="estado_cancha" style="width: 55px; height: 28px; cursor: pointer;">
+                                </div>
+                            </div>
+                        </div>
+
+                        @* Acciones *@
+                        <div class="col-12">
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-save-changes">
+                                    <i class="bi bi-cloud-arrow-up-fill me-2"></i> ACTUALIZAR INFORMACIÓN
+                                </button>
+                                <a asp-action="Admin" class="btn btn-link text-decoration-none text-muted fw-bold small">
+                                    <i class="bi bi-x-circle me-1"></i> Descartar cambios
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    /* Estilo del Switch Turquesa */
-    .custom-switch:checked {
-        background-color: #27F5CC !important;
-        border-color: #27F5CC !important;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #27F5CC !important;
-        box-shadow: 0 0 0 0.25rem rgba(39, 245, 204, 0.1) !important;
-    }
-</style>

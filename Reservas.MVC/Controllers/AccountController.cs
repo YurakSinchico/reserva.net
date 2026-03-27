@@ -32,26 +32,27 @@ namespace Reservas.MVC.Controllers
         {
             username = username.Trim().ToLower();
 
-            // 1. Verificamos las credenciales con el servicio
             if (await _authService.Login(username, password))
             {
-                // 2. Buscamos al cliente en la DB para obtener su ID real
                 var cliente = Crud<Clientes>.GetAll()
                     .FirstOrDefault(u => u.correo_cliente.ToLower() == username);
 
                 if (cliente != null)
                 {
-                    // 3. Creamos los Claims incluyendo el ID vital para las reservas
+                    // --- AÑADE ESTAS LÍNEAS AQUÍ ---
+                    // Guardamos en la Sesión para que el ReservasController pueda filtrar
+                    HttpContext.Session.SetInt32("UsuarioId", cliente.Id);
+                    HttpContext.Session.SetString("UsuarioCorreo", cliente.correo_cliente.ToLower());
+                    // ------------------------------
+
                     var claims = new List<System.Security.Claims.Claim>
             {
                 new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, cliente.nombre_cliente),
-                new System.Security.Claims.Claim("Id", cliente.Id.ToString()), // El ID que usaremos en Reservas
+                new System.Security.Claims.Claim("Id", cliente.Id.ToString()),
                 new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, cliente.correo_cliente)
             };
 
                     var claimsIdentity = new System.Security.Claims.ClaimsIdentity(claims, "Cookies");
-
-                    // 4. Guardamos la cookie de forma explícita
                     await HttpContext.SignInAsync("Cookies", new System.Security.Claims.ClaimsPrincipal(claimsIdentity));
 
                     return RedirectToAction("Index", "Home");
@@ -94,6 +95,7 @@ namespace Reservas.MVC.Controllers
 
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Clear();
             // Elimina la cookie de autenticación
             await HttpContext.SignOutAsync("Cookies");
             return RedirectToAction("Index", "Account");

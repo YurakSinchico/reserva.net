@@ -1,0 +1,108 @@
+﻿/* Imagen de fondo para el cuerpo de la página */
+.reserva-page-container {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1544919982-b61976f0ba43?q=80&w=2022&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Tarjeta principal con bordes redondeados (Estilo Yurak) */
+.reserva-card {
+    border-radius: 25px !important;
+    overflow: hidden;
+    border: none !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+}
+
+/* Encabezado con degradado */
+.reserva-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #198754 100%);
+    padding: 2rem 1rem;
+    border: none;
+}
+
+/* Estilos para los inputs y botones */
+.reserva-input-group {
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.reserva-btn-confirmar {
+    border-radius: 15px !important;
+    padding: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+    .reserva-btn-confirmar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+    }
+
+/* Contenedor principal con imagen de fondo de canchas */
+.reserva-historial-page {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1526232762683-215c70b2fbc9?q=80&w=2071&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+/* Tarjeta de historial */
+.card-historial {
+    border-radius: 20px !important;
+    overflow: hidden;
+    border: none !important;
+    background-color: rgba(255, 255, 255, 0.95); /* Blanco ligeramente transparente */
+}
+
+/* Cabecera oscura */
+.header-historial {
+    background-color: #212529 !important;
+    padding: 1.5rem !important;
+}
+
+/* Estilo de la tabla interna */
+.table-historial thead {
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.table-historial td {
+    padding: 1rem !important;
+    color: #495057;
+}
+
+/* Badge de canchas con colores calmados (azules/verdes) */
+.badge-cancha {
+    background-color: #e3f2fd !important;
+    color: #0d47a1 !important;
+    border: 1px solid #bbdefb;
+    font-weight: 600;
+}
+
+/* Botón de cancelar */
+.btn-cancelar-reserva {
+    border-radius: 50px !important;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem;
+    transition: all 0.3s;
+}
+
+    .btn-cancelar-reserva:hover {
+        background-color: #dc3545;
+        color: white;
+    }

@@ -1,7 +1,7 @@
-﻿@using Reserva.Modelos
+﻿@model Reserva.Modelos.Clientes
 @{
-    ViewData["Title"] = "Gestión de Usuarios";
-    Layout = null; // Esto elimina la barra lateral y el dashboard
+    ViewData["Title"] = "Crear Cuenta - ECUMEX";
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -10,152 +10,69 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            /* Imagen de fondo creativa con overlay oscuro */
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .elec-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            width: 100%;
-            max-width: 850px;
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        /* CORRECCIÓN: Usamos @@ para que Razor no dé error */
-        @@keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .elec-card-header {
-            background: #0f172a;
-            padding: 2rem;
-            color: white;
-        }
-
-        .elec-title {
-            color: #0f172a;
-            font-weight: 800;
-            border-left: 4px solid #27F5CC;
-            padding-left: 10px;
-            margin-bottom: 1.5rem;
-		}
-
-
-        .elec-form-control {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            padding: 10px 15px;
-            border-radius: 12px;
-        }
-
-            .elec-form-control:focus {
-                border-color: #27F5CC;
-                box-shadow: 0 0 0 4px rgba(39, 245, 204, 0.1);
-            }
-
-        .btn-register {
-            background: #0f172a;
-            color: white;
-            border: none;
-            padding: 12px;
-            font-weight: 700;
-            transition: all 0.3s ease;
-        }
-
-            .btn-register:hover {
-                background: #27F5CC;
-                color: #0f172a;
-                transform: translateY(-2px);
-            }
-
-        .btn-cancel {
-            background: #f1f5f9;
-            color: #64748b;
-            text-decoration: none;
-            padding: 12px;
-            font-weight: 600;
-            display: block;
-            text-align: center;
-            border-radius: 12px;
-        }
-    </style>
+    @* Estilos externos *@
+    <link rel="stylesheet" href="~/css/register-vivid.css" asp-append-version="true" />
 </head>
 <body>
 
     <div class="elec-card shadow-lg">
         <div class="elec-card-header text-center">
-            <i class="bi bi-person-plus-fill fs-1" style="color: #27F5CC;"></i>
-            <h3 class="fw-bold mt-2">Crear Nueva Cuenta</h3>
+            <i class="bi bi-person-plus-fill" style="color: #27F5CC; font-size: 3.5rem;"></i>
+            <h2 class="fw-900 mt-2 mb-0">ÚNETE A <span style="color: #27F5CC;">ECUMEX</span></h2>
+            <p class="text-white-50 small fw-bold mt-1">ESTÁS A UN PASO DE TU PRÓXIMO PARTIDO</p>
         </div>
 
         <div class="elec-card-body p-4 p-md-5">
             <form asp-action="Register" asp-controller="Account" method="post">
                 <div class="row">
+                    @* Columna de Datos Personales *@
                     <div class="col-md-6 border-end pe-md-4">
-                        <h5 class="elec-title fs-6">DATOS PERSONALES</h5>
+                        <h5 class="elec-title fs-6 small">Datos Personales</h5>
                         <div class="mb-3">
-                            <label class="small fw-bold">Nombres</label>
-                            <input type="text" name="nombre_cliente" class="form-control elec-form-control" placeholder="Juan Alberto" required>
+                            <label class="small fw-800 text-muted mb-1">NOMBRES</label>
+                            <input type="text" name="nombre_cliente" class="form-control elec-form-control" placeholder="Ej. Juan Alberto" required>
                         </div>
                         <div class="mb-3">
-                            <label class="small fw-bold">Apellidos</label>
-                            <input type="text" name="apellido_cliente" class="form-control elec-form-control" placeholder="Pérez Castro" required>
+                            <label class="small fw-800 text-muted mb-1">APELLIDOS</label>
+                            <input type="text" name="apellido_cliente" class="form-control elec-form-control" placeholder="Ej. Pérez Castro" required>
                         </div>
                         <div class="mb-3">
-                            <label class="small fw-bold">Fecha de Nacimiento</label>
+                            <label class="small fw-800 text-muted mb-1">FECHA DE NACIMIENTO</label>
                             <input type="date" name="fecha_nacimiento_cliente" class="form-control elec-form-control" required>
                         </div>
                     </div>
 
+                    @* Columna de Contacto y Acceso *@
                     <div class="col-md-6 ps-md-4 mt-4 mt-md-0">
-                        <h5 class="elec-title fs-6">CONTACTO Y ACCESO</h5>
+                        <h5 class="elec-title fs-6 small">Contacto y Acceso</h5>
                         <div class="mb-3">
-                            <label class="small fw-bold">Correo Electrónico</label>
+                            <label class="small fw-800 text-muted mb-1">CORREO ELECTRÓNICO</label>
                             <input type="email" name="correo_cliente" class="form-control elec-form-control" placeholder="usuario@ejemplo.com" required>
                         </div>
                         <div class="mb-3">
-                            <label class="small fw-bold">Teléfono</label>
+                            <label class="small fw-800 text-muted mb-1">TELÉFONO</label>
                             <input type="text" name="telefono_cliente" class="form-control elec-form-control" placeholder="099-XXX-XXXX" required>
                         </div>
                         <div class="mb-3">
-                            <label class="small fw-bold">Contraseña</label>
+                            <label class="small fw-800 text-muted mb-1">CONTRASEÑA</label>
                             <input type="password" name="contrasena_cliente" class="form-control elec-form-control" placeholder="Mínimo 8 caracteres" required>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mt-4 g-3">
-                    <div class="col-md-6">
-                        <a asp-action="Index" asp-controller="Account" class="btn-cancel">Cancelar</a>
+                @* Sección de Botones de Acción *@
+                <div class="row mt-5 g-3">
+                    <div class="col-md-6 order-2 order-md-1">
+                        @* Corrección: Apunta a la acción Index para evitar el error 404 *@
+                        <a asp-action="Index" asp-controller="Account" class="btn-cancel text-center d-block" style="text-decoration: none;">VOLVER AL LOGIN</a>
                     </div>
-                    <div class="col-md-6">
-                        <button type="submit" class="btn btn-register w-100 rounded-3">CREAR USUARIO</button>
+                    <div class="col-md-6 order-1 order-md-2">
+                        <button type="submit" class="btn-register w-100">REGISTRAR MI CUENTA</button>
                     </div>
                 </div>
             </form>

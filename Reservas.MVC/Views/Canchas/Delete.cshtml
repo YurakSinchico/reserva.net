@@ -1,25 +1,121 @@
 ﻿@model Reserva.Modelos.Canchas
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5 text-center">
-            <div class="card border-0 shadow-lg rounded-4 p-4">
-                <div class="display-1 text-danger mb-3">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-                <h2 class="fw-bold">¿Eliminar cancha?</h2>
-                <p class="text-muted">Estás a punto de borrar <strong>@Model.nombre_cancha</strong>. Esta acción no se puede deshacer.</p>
+@{
+    ViewData["Title"] = "Eliminar Cancha";
+}
 
-                <form asp-action="DeleteConfirmed" method="post" asp-route-id="@Model.Id">
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-danger btn-modern py-3">
-                            <i class="bi bi-trash me-2"></i>Confirmar Eliminación
-                        </button>
-                        <a asp-action="Admin" class="btn btn-link text-muted text-decoration-none">
-                            Cancelar y volver
-                        </a>
+<style>
+    /* Contenedor de advertencia inmersivo */
+    .delete-container {
+        background: #f8fafc;
+        border-radius: 30px;
+        padding: 60px 20px;
+    }
+
+    /* Tarjeta de peligro con borde superior rojo */
+    .card-danger-immersive {
+        background: white;
+        border-radius: 28px;
+        border: none;
+        box-shadow: 0 25px 60px rgba(239, 68, 68, 0.15);
+        border-top: 8px solid #ef4444;
+        overflow: hidden;
+    }
+
+    /* Icono de advertencia con pulso (Solo CSS) */
+    .warning-icon-css {
+        font-size: 5rem;
+        color: #ef4444;
+        display: inline-block;
+        animation: pulse-red 2s infinite;
+    }
+
+    @@keyframes pulse-red {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* Botón de eliminación definitiva */
+    .btn-danger-confirm {
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 18px;
+        font-weight: 800;
+        transition: all 0.3s ease;
+    }
+
+        .btn-danger-confirm:hover {
+            background: #b91c1c;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+
+    .fw-800 {
+        font-weight: 800;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="delete-container shadow-sm">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7 text-center">
+
+                <div class="card-danger-immersive">
+                    <div class="card-body p-5">
+
+                        @* Animación visual de alerta *@
+                        <div class="mb-4">
+                            <i class="bi bi-exclamation-octagon-fill warning-icon-css"></i>
+                        </div>
+
+                        <h2 class="fw-800 text-dark mb-3" style="letter-spacing: -1px;">
+                            ¿Confirmas la <span class="text-danger">Baja</span>?
+                        </h2>
+
+                        <p class="text-muted px-3 mb-4">
+                            Estás intentando eliminar la cancha
+                            <strong class="text-dark">"@Model.nombre_cancha"</strong>.
+                            Esta operación es irreversible y afectará al inventario.
+                        </p>
+
+                        @* Formulario de acción directa *@
+                        <form asp-action="DeleteConfirmed" asp-route-id="@Model.Id" method="post">
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-danger-confirm">
+                                    <i class="bi bi-trash3-fill me-2"></i> ELIMINAR PERMANENTEMENTE
+                                </button>
+
+                                <a asp-action="Admin" class="btn btn-link text-decoration-none fw-bold text-muted small">
+                                    <i class="bi bi-arrow-left me-1"></i> No, mantener en inventario
+                                </a>
+                            </div>
+                        </form>
+
                     </div>
-                </form>
+                </div>
+
+                @* Mensaje de seguridad al pie *@
+                <div class="mt-4 p-3 d-inline-block" style="background: rgba(15, 23, 42, 0.05); border-radius: 12px;">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle-fill me-1"></i>
+                        Los datos históricos de reservas no se verán afectados.
+                    </small>
+                </div>
+
             </div>
         </div>
     </div>

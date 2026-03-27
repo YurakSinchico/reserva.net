@@ -1,0 +1,94 @@
+﻿/* 1. ANIMACIÓN DE FONDO */
+.bg-canchas-dinamico {
+    background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff, #27F5CC20);
+    background-size: 400% 400%;
+    animation: sportGradient 18s ease-in-out infinite;
+    min-height: 100vh;
+}
+
+@keyframes sportGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* 2. DISEÑO DE TARJETA */
+.card-sport-vivid {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 30px !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    overflow: hidden;
+}
+
+    .card-sport-vivid:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 30px 60px rgba(15, 23, 42, 0.15) !important;
+    }
+
+/* 3. ZOOM CINEMATOGRÁFICO */
+.img-wrapper {
+    position: relative;
+    height: 230px;
+    overflow: hidden;
+}
+
+.img-dynamic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 10s ease-out;
+}
+
+.card-sport-vivid:hover .img-dynamic {
+    transform: scale(1.25);
+}
+
+/* 4. BOTÓN TIPO WIDGET */
+.btn-action-sport {
+    background: #0f172a;
+    color: white;
+    border-radius: 20px;
+    padding: 16px;
+    font-weight: 900;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+    .btn-action-sport:hover:not(.disabled) {
+        background: #27F5CC;
+        color: #0f172a;
+        box-shadow: 0 10px 25px rgba(39, 245, 204, 0.4);
+    }
+
+    .btn-action-sport.disabled {
+        opacity: 0.5;
+        pointer-events: none; /* Bloquea el clic sin JS */
+        background: #94a3b8;
+    }
+
+.badge-float {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: white;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.7rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 10;
+}

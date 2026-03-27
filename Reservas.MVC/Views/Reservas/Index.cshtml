@@ -1,116 +1,77 @@
-﻿@using System.Security.Claims
-@model IEnumerable<Reserva.Modelos.Reservas>
+﻿@model IEnumerable<Reserva.Modelos.Reservas>
 @{
-    ViewData["Title"] = "Mis Reservas";
-    var adminEmail = "yurianrango3@gmail.com";
-    var userEmail = User.FindFirstValue(System.Security.Claims.ClaimTypes.Email);
+    var canchas = ViewBag.Canchas as List<Reserva.Modelos.Canchas>;
+    var horarios = ViewBag.Horarios as List<Reserva.Modelos.Horarios>;
+    var clientes = ViewBag.Clientes as List<Reserva.Modelos.Clientes>;
 }
 
-<div class="container mt-4">
-    @* --- ALERTAS DE FEEDBACK AL USUARIO --- *@
-    @if (TempData["Mensaje"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-left: 5px solid #198754;">
-            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Mensaje"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<div class="container-fluid mt-4">
+    <div class="card reserva-card">
+        <div class="card-header bg-dark py-3">
+            <h5 class="text-white mb-0 fw-bold">
+                <i class="bi bi-calendar3 me-2 text-info"></i> Historial de Reservas
+            </h5>
         </div>
-    }
 
-    @if (TempData["Error"] != null || TempData["ErrorPermiso"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-left: 5px solid #dc3545;">
-            <i class="bi bi-exclamation-octagon-fill me-2"></i> @(TempData["Error"] ?? TempData["ErrorPermiso"])
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    <div class="card shadow border-0" style="border-radius: 16px; overflow: hidden;">
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-            <h4 class="mb-0 fw-bold"><i class="bi bi-calendar3 me-2"></i>Historial de Reservas</h4>
-
-            @if (userEmail == adminEmail)
-            {
-                <a asp-action="Create" class="btn btn-success btn-sm fw-bold shadow-sm px-3">
-                    <i class="bi bi-plus-lg me-1"></i> Nueva Reserva
-                </a>
-            }
-        </div>
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-4">Fecha</th>
-                            <th>Cancha</th>
-                            <th>Horario</th>
-                            <th>Cliente</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Any())
+            <table class="table table-hover align-middle mb-0 table-reserva">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Fecha</th>
+                        <th>Cancha</th>
+                        <th>Horario</th>
+                        <th>Cliente</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
                         {
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td class="ps-4 fw-bold text-secondary">
-                                        @item.fecha_reserva.ToShortDateString()
-                                    </td>
-                                    <td>
-                                        <span class="badge rounded-pill bg-info text-dark px-3">
-                                            <i class="bi bi-trophy-fill me-1"></i>
-                                            @(item.Canchas?.nombre_cancha ?? "Cancha #" + item.CanchasId)
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-clock-history me-2 text-primary"></i>
-                                            <span class="fw-semibold text-dark">
-                                                @(item.Horarios?.hora_inicio.ToString(@"HH\:mm") ?? "N/A")
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="https://ui-avatars.com/api/?name=@(item.Clientes?.nombre_cliente ?? "U")&background=random&size=30" class="rounded-circle me-2" alt="user">
-                                            <span class="text-truncate" style="max-width: 150px;">
-                                                @(item.Clientes?.nombre_cliente ?? "Usuario " + item.ClientesId)
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="text-center pe-4">
-                                        @* Lógica de Cancelación con validación de fecha *@
-                                        @if (item.fecha_reserva.Date >= DateTime.Now.Date)
-                                        {
-                                            <form asp-action="Cancelar" asp-route-id="@item.Id" method="post"
-                                                  onsubmit="return confirm('¿Estás seguro de que deseas cancelar esta reserva? El horario quedará libre inmediatamente.');">
-                                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
-                                                    <i class="bi bi-x-circle me-1"></i> Cancelar
-                                                </button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-secondary opacity-75 rounded-pill">
-                                                <i class="bi bi-check2-all me-1"></i> Finalizada
-                                            </span>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
+                            var cliente = clientes?.FirstOrDefault(c => c.Id == item.ClientesId);
+                            var nombre = cliente?.nombre_cliente ?? "Usuario";
+
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="bi bi-calendar-x d-block mb-2" style="font-size: 3rem; opacity: 0.3;"></i>
-                                    <p class="mb-0">No hay reservas registradas actualmente.</p>
+                                <td class="ps-4 fw-bold">@item.fecha_reserva.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <span class="badge-cancha">
+                                        <i class="bi bi-trophy-fill"></i>
+                                        @(canchas?.FirstOrDefault(c => c.Id == item.CanchasId)?.nombre_cancha ?? "Cancha")
+                                    </span>
+                                </td>
+                                <td class="text-primary">
+                                    <i class="bi bi-clock"></i>
+                                    @(horarios?.FirstOrDefault(h => h.Id == item.HorariosId)?.hora_inicio.ToString(@"HH\:mm") ?? "00:00")
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-cliente">@nombre.Substring(0, 1).ToUpper()</div>
+                                        <span class="small fw-bold">@nombre</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <form asp-action="Cancelar" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm btn-cancelar">
+                                            <i class="bi bi-trash"></i> Cancelar
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                No hay reservas registradas actualmente.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

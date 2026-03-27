@@ -1,0 +1,511 @@
+﻿/* /* --- CONFIGURACIÓN BASE --- */
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #f8fafc;
+    margin: 0;
+}
+
+/* --- ESTRUCTURA PRINCIPAL (SIDEBAR Y CONTENIDO) --- */
+.sidebar-wrapper {
+    background: #ffffff;
+    border-right: 1px solid rgba(0,0,0,0.05);
+    width: 280px;
+    height: 100vh;
+    position: fixed;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.brand-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 3rem;
+}
+
+.brand-icon {
+    width: 40px;
+    height: 40px;
+    background: #27F5CC;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    color: #0f172a;
+    box-shadow: 0 8px 15px rgba(39,245,204,0.3);
+}
+
+.nav-link-vivid {
+    color: #64748b;
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+    .nav-link-vivid:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+        transform: translateX(5px);
+    }
+
+    .nav-link-vivid.active {
+        background: #27F5CC;
+        color: #0f172a !important;
+        box-shadow: 0 10px 20px rgba(39, 245, 204, 0.2);
+    }
+
+.main-content {
+    margin-left: 280px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- VISTA DE USUARIO: CANCHAS DISPONIBLES (ESTILO SPORT) --- */
+.sport-page-wrapper {
+    background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #ffffff, rgba(39, 245, 204, 0.1));
+    background-size: 400% 400%;
+    animation: sportGradient 18s ease-in-out infinite;
+    min-height: 100vh;
+}
+
+@keyframes sportGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.card-sport-vivid {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 30px !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    overflow: hidden;
+    height: 100%;
+}
+
+    .card-sport-vivid:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 30px 60px rgba(15, 23, 42, 0.12) !important;
+    }
+
+    .card-sport-vivid .img-wrapper {
+        position: relative;
+        height: 230px;
+        overflow: hidden;
+    }
+
+    .card-sport-vivid:hover .img-wrapper img {
+        transform: scale(1.15);
+    }
+
+    .card-sport-vivid .img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 10s ease-out;
+    }
+
+.badge-float {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: white;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.7rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+/* Colores de Borde por Deporte */
+.type-futbol .badge-float {
+    border-left: 4px solid #10b981;
+}
+
+.type-basquet .badge-float {
+    border-left: 4px solid #f59e0b;
+}
+
+.type-voley .badge-float {
+    border-left: 4px solid #0ea5e9;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 800;
+}
+
+    .status-badge.available {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .status-badge.maintenance {
+        background: #fef2f2;
+        color: #dc3545;
+    }
+
+.btn-action-sport {
+    background: #0f172a;
+    color: white;
+    border-radius: 20px;
+    padding: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+    .btn-action-sport:hover:not(.disabled) {
+        background: #27F5CC;
+        color: #0f172a;
+        box-shadow: 0 10px 25px rgba(39, 245, 204, 0.4);
+    }
+
+    .btn-action-sport.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #94a3b8;
+        pointer-events: none;
+    }
+
+/* --- VISTA DE ADMINISTRADOR: GESTIÓN DE INVENTARIO --- */
+.admin-bg-wallpaper {
+    background-image: linear-gradient(rgba(248, 250, 252, 0.85), rgba(248, 250, 252, 0.9)), url('https://images.unsplash.com/photo-1544919396-1049909670d3?q=80&w=2070&auto=format&fit=crop') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 24px;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.admin-table-container {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+}
+
+.btn-white {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 12px;
+    transition: all 0.2s;
+    color: #0f172a;
+}
+
+    .btn-white:hover {
+        background: #f8fafc;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+/* --- UTILIDADES GENERALES --- */
+.fw-800 {
+    font-weight: 800;
+}
+
+.footer-capsule {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 1rem 2rem;
+}
+
+.user-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.logout-btn {
+    color: #ef4444;
+    background: #fef2f2;
+    border-radius: 12px;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+    .logout-btn:hover {
+        background: #fee2e2;
+    }
+/* Contenedor principal con imagen de fondo de canchas */
+.main-booking-container {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1526232759533-36b17f98a702?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 40px 0;
+}
+
+/* Tarjeta minimalista con bordes redondeados de 20px */
+.glass-card {
+    background: rgba(255, 255, 255, 0.98);
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* Encabezado con degradado Azul a Verde */
+.card-header-custom {
+    background: linear-gradient(135deg, #0d6efd 0%, #198754 100%);
+    color: white;
+    padding: 25px;
+    border: none;
+}
+
+/* Inputs con diseño moderno */
+.form-control-custom {
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+}
+
+    .form-control-custom:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.1);
+        background-color: #fff;
+    }
+
+/* Botón de confirmación */
+.btn-confirm {
+    background-color: #0d6efd;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+    .btn-confirm:hover {
+        background-color: #198754;
+        transform: translateY(-2px);
+    }
+
+.label-minimal {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6c757d;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+}
+/* ... (manten el código anterior y añade/modifica esto) ... */
+
+.form-control-static {
+    background-color: #e9ecef; /* Gris suave para indicar que es fijo */
+    border-radius: 12px;
+    padding: 12px 15px;
+    font-weight: 600;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    display: block;
+    width: 100%;
+}
+
+.main-booking-container {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1526232759533-36b17f98a702?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 40px 0;
+
+}
+/* Contenedor de éxito con imagen de fondo temática */
+.success-bg-wrapper {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1544919396-1049909670d3?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+}
+
+/* Tarjeta de éxito con bordes de 20px */
+.success-card {
+    border: none !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Cabecera verde vibrante */
+.success-header {
+    background-color: #28a745 !important;
+    color: white;
+    padding: 3rem 1rem;
+}
+
+/* Botón principal azul */
+.btn-success-primary {
+    background-color: #007bff !important;
+    border: none !important;
+    padding: 12px;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+}
+
+    .btn-success-primary:hover {
+        transform: scale(1.02);
+        background-color: #0056b3 !important;
+    }
+
+/* Alerta informativa minimalista */
+.info-box-minimal {
+    background-color: #e1f5fe !important;
+    color: #01579b !important;
+    border: none !important;
+    border-radius: 15px !important;
+}
+/* --- NUEVA SECCIÓN: ANIMACIÓN DE ENTRADA (SIN JS) --- */
+
+/* Definición de la animación: Aparecer y subir suavemente */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px); /* Empieza 30px abajo */
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Termina en su posición original */
+    }
+}
+
+/* Clase para aplicar la animación a la tarjeta */
+.animate-success-card {
+    animation-name: fadeInUp;
+    animation-duration: 0.8s; /* Duración de la animación */
+    animation-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1); /* Curva de velocidad suave */
+    animation-fill-mode: both; /* Mantiene el estado final (visible) */
+    /* Pequeño delay opcional para que cargue el fondo primero */
+    animation-delay: 0.2s;
+}
+/* Contenedor y Tabla */
+.reserva-card {
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.table-reserva thead {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+/* Badges de Cancha */
+.badge-cancha {
+    background-color: #e0f7fa;
+    color: #00acc1;
+    border: 1px solid #00acc1;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+}
+
+/* Avatar del Cliente */
+.avatar-cliente {
+    width: 32px;
+    height: 32px;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.75rem;
+    margin-right: 10px;
+}
+
+/* Botón de Cancelar */
+.btn-cancelar {
+    border-radius: 50px;
+    padding: 0.25rem 1rem;
+    transition: 0.3s;
+}
+/* Fondo para las páginas de gestión */
+.bg-deportivo {
+    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    min-height: 100vh;
+}
+
+.horario-card {
+    border-radius: 20px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.text-cyan {
+    color: #27F5CC;
+}
+
+.fw-800 {
+    font-weight: 800;
+}
+
+/* Efecto en filas */
+.table-horarios tbody tr:hover {
+    background-color: rgba(39, 245, 204, 0.05) !important;
+    transition: 0.3s;
+}
+
+.badge-id {
+    background-color: #f1f3f5;
+    color: #495057;
+    border-radius: 50px;
+    padding: 5px 15px;
+}
